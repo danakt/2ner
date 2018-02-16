@@ -9,22 +9,16 @@ const sourcePath = path.join(__dirname, './src')
 
 const config: Webpack.Configuration = {
   context: sourcePath,
-  entry: {
-    main: './index.tsx',
-    vendor: [
-      'react',
-      'react-dom',
-      'react-redux',
-      'react-router',
-      'redux'
-    ]
+  entry:   {
+    main:   './index.tsx',
+    vendor: ['react', 'react-dom', 'mobx-react', 'react-router', 'mobx']
   },
   output: {
-    path: outPath,
+    path:       outPath,
     publicPath: '/',
-    filename: 'bundle.js',
+    filename:   'bundle.js'
   },
-  target: 'web',
+  target:  'web',
   resolve: {
     extensions: ['.js', '.ts', '.tsx'],
     // Fix webpack's default behavior to not load packages with jsnext:main module
@@ -32,36 +26,45 @@ const config: Webpack.Configuration = {
     mainFields: ['browser', 'main']
   },
   module: {
-    loaders: [
+    rules: [
+      {
+        enforce: 'pre',
+        test:    /\.tsx?$/,
+        exclude: /node_modules/,
+        loader:  'eslint-loader',
+        options: {
+          // eslint options (if necessary)
+        }
+      },
       // .ts, .tsx
       {
         test: /\.tsx?$/,
-        use: isProduction
+        use:  isProduction
           ? 'awesome-typescript-loader?module=es6'
-          : [
-            'react-hot-loader/webpack',
-            'awesome-typescript-loader'
-          ]
+          : ['react-hot-loader/webpack', 'awesome-typescript-loader']
       },
       // static assets
       { test: /\.html$/, use: 'html-loader' },
       { test: /\.png$/, use: 'url-loader?limit=10000' },
-      { test: /\.jpg$/, use: 'file-loader' },
-    ],
+      { test: /\.jpg$/, use: 'file-loader' }
+    ]
   },
   plugins: [
     new Webpack.DefinePlugin({
-      'process.env.NODE_ENV': isProduction === true ? JSON.stringify('production') : JSON.stringify('development')
+      'process.env.NODE_ENV':
+        isProduction === true
+          ? JSON.stringify('production')
+          : JSON.stringify('development')
     }),
     new Webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
-      filename: 'vendor.bundle.js',
+      name:      'vendor',
+      filename:  'vendor.bundle.js',
       minChunks: Infinity
     }),
     new Webpack.optimize.AggressiveMergingPlugin(),
     new ExtractTextPlugin({
       filename: 'styles.css',
-      disable: !isProduction
+      disable:  !isProduction
     }),
     new HtmlWebpackPlugin({
       template: 'index.html'
@@ -69,15 +72,15 @@ const config: Webpack.Configuration = {
   ],
   devServer: {
     contentBase: sourcePath,
-    hot: true,
-    stats: {
+    hot:         true,
+    stats:       {
       warnings: false
-    },
+    }
   },
   node: {
     // workaround for webpack-dev-server issue
     // https://github.com/webpack/webpack-dev-server/issues/60#issuecomment-103411179
-    fs: 'empty',
+    fs:  'empty',
     net: 'empty'
   }
 }
