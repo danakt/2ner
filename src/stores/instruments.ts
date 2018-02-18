@@ -1,11 +1,9 @@
-/** @todo Remove the eslint stub below */
-// eslint-disable-next-line no-unused-vars
 import { observable, action } from 'mobx'
 import * as instruments from '../constants/instruments'
 
 type Instrument = typeof instruments
 
-export default class StoreInstruments {
+class StoreInstruments {
   /** Instruments */
   @observable public instruments = instruments
 
@@ -45,8 +43,10 @@ export default class StoreInstruments {
   changeTuning(newTuningIndex: number): void {
     const instrument = instruments[this.currentInstrument]
 
-    // If tuning index is not valid
+    // If tuning index is not valid for the instrument
     this.currentTuningIndex
       = instrument.tunings[newTuningIndex] !== undefined ? newTuningIndex : 0
   }
 }
+
+export default new StoreInstruments()
