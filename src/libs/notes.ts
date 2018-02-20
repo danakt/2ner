@@ -36,7 +36,7 @@ const NOTE_STRINGS = [
  * @param  {number} frequency
  * @return {number}
  */
-export function noteNumberFromPitch(frequency: number): number {
+export function getNoteNumberFromPitch(frequency: number): number {
   const noteNum: number = 12 * (Math.log(frequency / 440) / Math.log(2))
   return Math.round(noteNum) + 69
 }
@@ -46,7 +46,7 @@ export function noteNumberFromPitch(frequency: number): number {
  * @param  {number} noteNumber
  * @return {number}
  */
-export function frequencyFromNoteNumber(noteNumber: number): number {
+export function getFrequencyFromNoteNumber(noteNumber: number): number {
   return 440 * Math.pow(2, (noteNumber - 69) / 12)
 }
 
@@ -55,17 +55,18 @@ export function frequencyFromNoteNumber(noteNumber: number): number {
  * @param {number} frequency
  * @param {number} note
  */
-export function centsOffFromPitch(frequency: number, note: number) {
+export function getCentsOffFromPitch(frequency: number, note: number) {
   return Math.floor(
-    1200 * (Math.log(frequency / frequencyFromNoteNumber(note)) / Math.log(2))
+    1200
+      * (Math.log(frequency / getFrequencyFromNoteNumber(note)) / Math.log(2))
   )
 }
 
 /**
- * Returns note string from pitch
+ * Returns note name from pitch
  * @param  {number} frequency
  * @return {string}
  */
-export function noteFromPitch(frequency: number): string {
-  return NOTE_STRINGS[noteNumberFromPitch(frequency) % 12]
+export function getNoteNameFromPitch(frequency: number): string {
+  return NOTE_STRINGS[getNoteNumberFromPitch(frequency) % 12]
 }
