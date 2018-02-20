@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start":
-      "webpack-dev-server --debug --devtool cheap-module-source-map --output-pathinfo --history-api-fallback --hot --inline --progress --colors --port 3000",
+    "start": "webpack-dev-server --debug --devtool cheap-module-source-map --output-pathinfo --history-api-fallback --hot --inline --progress --colors --port 3000",
     "build": "webpack -p --progress --colors"
   },
   "author": "Danakt Frost",
@@ -45,6 +44,7 @@
     "webpack-dev-server": "^2.11.1"
   },
   "dependencies": {
+    "eslint-plugin-import": "^2.8.0",
     "mobx": "^3.5.1",
     "mobx-react": "^4.4.2",
     "react": "^16.2.0",
