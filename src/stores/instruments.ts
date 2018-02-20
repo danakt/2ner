@@ -3,7 +3,7 @@ import * as instruments from '../constants/instruments'
 
 type Instrument = typeof instruments
 
-class StoreInstruments {
+export class StoreInstruments {
   /** Instruments */
   @observable public instruments = instruments
 
@@ -49,4 +49,4 @@ class StoreInstruments {
   }
 }
 
-export default new StoreInstruments()
+export const storeInstruments = new StoreInstruments()
