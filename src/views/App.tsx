@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { observer } from 'mobx-react'
 // import { inject } from 'mobx-react'
-import { StringsWrapper } from './StringsWrapper'
+import { Strings } from './Strings'
 import { AudioRequestModal } from './AudioRequestModal'
 import { Stores } from '~/stores'
 
@@ -40,9 +40,7 @@ export class App extends React.Component<TProps> {
 
     return (
       <React.Fragment>
-        <div>
-          <StringsWrapper />
-        </div>
+        <Strings storeInstruments={this.props.storeInstruments} />
 
         <AudioRequestModal showed={isAudioRequestSended && !issetAudioStream} />
       </React.Fragment>
