@@ -40,7 +40,10 @@ export class App extends React.Component<TProps> {
 
     return (
       <React.Fragment>
-        <Strings storeInstruments={this.props.storeInstruments} />
+        <Strings
+          storeInstruments={this.props.storeInstruments}
+          storeMedia={this.props.storeMedia}
+        />
 
         <AudioRequestModal showed={isAudioRequestSended && !issetAudioStream} />
       </React.Fragment>

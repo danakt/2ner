@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Line } from './styles'
+import { Line, LineInfo } from './styles'
 
 type TProps = {
   pitchList: number[]
@@ -7,18 +7,18 @@ type TProps = {
 }
 
 type TState = {
-  isHidden: boolean
   y: number
   pitch: number
-  extendedPitchList: number[]
+  extPitchList: number[]
+  isHidden: boolean
 }
 
 export class PitchLine extends React.Component<TProps, TState> {
   public state = {
-    isHidden:          true,
-    y:                 0,
-    pitch:             0,
-    extendedPitchList: PitchLine.extendPitchList(this.props.pitchList)
+    y:            0,
+    isHidden:     true,
+    pitch:        0,
+    extPitchList: PitchLine.extendPitchList(this.props.pitchList)
   }
 
   /**
@@ -56,19 +56,43 @@ export class PitchLine extends React.Component<TProps, TState> {
 
   /** Component will receive props */
   public componentWillReceiveProps(nextProps: TProps) {
-    const { pitchList } = this.props
+    const { pitchList, pitch } = nextProps
 
     // Add new points to start and end of list
-    this.setState({
-      extendedPitchList: PitchLine.extendPitchList(pitchList)
-    })
+    if (this.props.pitchList !== pitchList) {
+      this.setState({
+        extPitchList: PitchLine.extendPitchList(pitchList)
+      })
+    }
+
+    // Validate pitch
+    if (
+      pitch < Math.max.apply(Math, pitchList)
+      && pitch > Math.min.apply(Math, pitchList)
+    ) {
+      this.setState({
+        pitch,
+        isHidden: false
+      })
+    } else {
+      this.setState({
+        isHidden: true
+      })
+    }
   }
 
   /** Render */
   public render() {
     const { pitch } = this.props
-    const { extendedPitchList } = this.state
+    const { extPitchList } = this.state
 
-    return <Line y={PitchLine.getLinePosition(pitch, extendedPitchList)} />
+    return (
+      <Line
+        isHidden={this.state.isHidden}
+        y={PitchLine.getLinePosition(pitch, extPitchList)}
+      >
+        <LineInfo>{this.props.pitch.toFixed(2)} hz</LineInfo>
+      </Line>
+    )
   }
 }
