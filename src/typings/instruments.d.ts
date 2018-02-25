@@ -1,7 +1,7 @@
 /** Tuning type */
 declare interface ITuning {
   name: string
-  pitch: number[]
+  pitchList: number[]
 }
 
 /** Preset type */

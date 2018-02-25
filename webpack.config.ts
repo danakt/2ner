@@ -2,6 +2,7 @@ import * as Webpack from 'webpack'
 import * as path from 'path'
 import * as HtmlWebpackPlugin from 'html-webpack-plugin'
 import * as ExtractTextPlugin from 'extract-text-webpack-plugin'
+import { TsConfigPathsPlugin } from 'awesome-typescript-loader'
 
 const isProduction = process.argv.indexOf('-p') >= 0
 const outPath = path.join(__dirname, './dist')
@@ -21,9 +22,10 @@ const config: Webpack.Configuration = {
   target:  'web',
   resolve: {
     extensions: ['.js', '.ts', '.tsx'],
-    // Fix webpack's default behavior to not load packages with jsnext:main module
-    // https://github.com/Microsoft/TypeScript/issues/11677
-    mainFields: ['browser', 'main']
+    // Fix webpack's default behavior to not load packages with jsnext:main
+    // module https://github.com/Microsoft/TypeScript/issues/11677
+    mainFields: ['browser', 'main'],
+    plugins:    [new TsConfigPathsPlugin()]
   },
   module: {
     rules: [
@@ -31,10 +33,7 @@ const config: Webpack.Configuration = {
         enforce: 'pre',
         test:    /\.tsx?$/,
         exclude: /node_modules/,
-        loader:  'eslint-loader',
-        options: {
-          // eslint options (if necessary)
-        }
+        loader:  'eslint-loader'
       },
       // .ts, .tsx
       {
@@ -79,6 +78,7 @@ const config: Webpack.Configuration = {
   },
   node: {
     // workaround for webpack-dev-server issue
+    // eslint-disable-next-line max-len
     // https://github.com/webpack/webpack-dev-server/issues/60#issuecomment-103411179
     fs:  'empty',
     net: 'empty'

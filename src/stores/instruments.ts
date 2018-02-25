@@ -1,9 +1,9 @@
-import { observable, action } from 'mobx'
+import { observable, action, computed } from 'mobx'
 import * as instruments from '../constants/instruments'
 
 type Instrument = typeof instruments
 
-class StoreInstruments {
+export class StoreInstruments {
   /** Instruments */
   @observable public instruments = instruments
 
@@ -11,10 +11,19 @@ class StoreInstruments {
    * Current preset
    * Default: 'guitar'
    */
-  @observable public currentInstrument: keyof Instrument = 'guitar'
+  @observable public currentInstrumentName: keyof Instrument = 'guitar'
 
   /** Current tuning */
   @observable public currentTuningIndex: number = 0
+
+  /**
+   * Cureent instrument
+   */
+  @computed
+  get currentTuning() {
+    const instrument = instruments[this.currentInstrumentName]
+    return instrument.tunings[this.currentTuningIndex]
+  }
 
   /**
    * Changes the instument
@@ -41,7 +50,7 @@ class StoreInstruments {
    */
   @action
   changeTuning(newTuningIndex: number): void {
-    const instrument = instruments[this.currentInstrument]
+    const instrument = instruments[this.currentInstrumentName]
 
     // If tuning index is not valid for the instrument
     this.currentTuningIndex
@@ -49,4 +58,4 @@ class StoreInstruments {
   }
 }
 
-export default new StoreInstruments()
+export const storeInstruments = new StoreInstruments()
