@@ -67,8 +67,8 @@ export class PitchLine extends React.Component<TProps, TState> {
 
     // Validate pitch
     if (
-      pitch < Math.max.apply(Math, pitchList)
-      && pitch > Math.min.apply(Math, pitchList)
+      pitch < Math.max.apply(Math, this.state.extPitchList)
+      && pitch > Math.min.apply(Math, this.state.extPitchList)
     ) {
       this.setState({
         pitch,
@@ -81,17 +81,20 @@ export class PitchLine extends React.Component<TProps, TState> {
     }
   }
 
+  public componentDidUpdate() {
+    console.log(this.state.pitch)
+  }
+
   /** Render */
   public render() {
-    const { pitch } = this.props
-    const { extPitchList } = this.state
+    const { extPitchList, pitch } = this.state
 
     return (
       <Line
         isHidden={this.state.isHidden}
         y={PitchLine.getLinePosition(pitch, extPitchList)}
       >
-        <LineInfo>{this.props.pitch.toFixed(2)} hz</LineInfo>
+        <LineInfo>{pitch.toFixed(2)} hz</LineInfo>
       </Line>
     )
   }
