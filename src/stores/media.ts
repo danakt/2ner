@@ -1,8 +1,9 @@
 import { observable, action } from 'mobx'
 import { startAudioProcessing } from '~/libs/audio'
+import { throttle } from '~/utils/throttle'
 
 export class StoreMedia {
-  /** Varialbe for saving function to cancel pitch update */
+  /** Variable for saving function to cancel pitch update */
   private _stopAudioProcessing: void | VoidFunction = undefined
 
   /** Current audio pitch */
@@ -26,9 +27,13 @@ export class StoreMedia {
 
     // Set new pitch updating
     if (stream != null) {
+      const throttledPitchUpdate = throttle(30, pitch =>
+        this.updatePitch(pitch)
+      )
+
       this._stopAudioProcessing = await startAudioProcessing(
         stream as MediaStream,
-        pitch => this.updatePitch(pitch)
+        pitch => throttledPitchUpdate(pitch)
       )
     }
   }
@@ -39,7 +44,6 @@ export class StoreMedia {
    */
   @action
   public updatePitch(pitch: number) {
-    // this.currentPitch = Math.random() * 150 + 60
     this.currentPitch = pitch
   }
 }
