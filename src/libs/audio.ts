@@ -95,7 +95,7 @@ export function getPitch(
  */
 export async function startAudioProcessing(
   audioStream: MediaStream,
-  callback: (pitch: number) => void
+  callback: (pitch: number, buffer?: Float32Array) => void
 ): Promise<() => void> {
   const BUFFER_SIZE: number = 2 ** 11 // 2048
 
@@ -117,7 +117,7 @@ export async function startAudioProcessing(
   script.connect(audioContext.destination)
 
   /**
-   * Hanler of audio process event
+   * Handler of audio process event
    * @param {AudioProcessingEvent} event
    */
   const handleAudioProcess = function handleAudioProcess(
@@ -126,7 +126,7 @@ export async function startAudioProcessing(
     const buffer: Float32Array = event.inputBuffer.getChannelData(0).slice()
     const pitch = getPitch(buffer, audioContext.sampleRate)
 
-    callback(pitch)
+    callback(pitch, buffer)
   }
 
   script.addEventListener('audioprocess', handleAudioProcess)
