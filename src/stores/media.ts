@@ -6,11 +6,14 @@ export class StoreMedia {
   /** Variable for saving function to cancel pitch update */
   private _stopAudioProcessing: void | VoidFunction = undefined
 
+  /** Audio stream */
+  @observable public audioStream: MediaStream | null | void = undefined
+
   /** Current audio pitch */
   @observable public currentPitch = 0
 
-  /** Audio stream */
-  @observable public audioStream: MediaStream | null | void = undefined
+  /** Current audio buffer */
+  @observable public currentBuffer: Float32Array | void = undefined
 
   /**
    * Sets audio stream
@@ -27,13 +30,17 @@ export class StoreMedia {
 
     // Set new pitch updating
     if (stream != null) {
-      const throttledPitchUpdate = throttle(30, pitch =>
-        this.updatePitch(pitch)
+      const throttledPitchUpdate = throttle(
+        30,
+        (pitch: number, buffer?: Float32Array) =>
+          this.updatePitch(pitch, buffer)
       )
 
       this._stopAudioProcessing = await startAudioProcessing(
         stream as MediaStream,
-        pitch => throttledPitchUpdate(pitch)
+        (pitch, buffer) => {
+          throttledPitchUpdate(pitch, buffer)
+        }
       )
     }
   }
@@ -43,7 +50,8 @@ export class StoreMedia {
    * @param pitch The pitch
    */
   @action
-  public updatePitch(pitch: number) {
+  public updatePitch(pitch: number, buffer?: Float32Array) {
+    this.currentBuffer = buffer
     this.currentPitch = pitch
   }
 }
