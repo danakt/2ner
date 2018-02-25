@@ -1,12 +1,12 @@
 /* eslint-disable space-before-function-paren */
-import { curry } from 'ramda'
 
 /**
  * Creates wrapper for throttling a function
  * @param time Delay time
  * @param fn Any function for throttle
+ * @return Wrapper of function
  */
-export const throttle = curry(function<T extends (...a: any[]) => any>(
+export function throttle<T extends (...a: any[]) => any>(
   this: any,
   time: number,
   fn: T
@@ -28,4 +28,4 @@ export const throttle = curry(function<T extends (...a: any[]) => any>(
   }
 
   return ret as T
-})
+}
