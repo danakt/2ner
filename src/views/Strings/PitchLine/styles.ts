@@ -5,15 +5,19 @@ type TLineProps = {
   isHidden: boolean
 }
 
-export const Line = styled.div`
+export const Line = styled.div.attrs<TLineProps>({
+  style: (props: TLineProps) => ({
+    top: props.y + '%'
+  })
+})`
   position: absolute;
   left: 0;
-  top: ${(props: TLineProps) => props.y + '%'};
   height: 1px;
   width: 100%;
   background-color: blue;
   opacity: ${(props: TLineProps) => (props.isHidden ? 0 : 1)};
-  transition: top 0.15s ease-out, opacity 0.5s ease-out;
+  transition: top 0.1s ease-out, opacity 0.5s ease-out;
+  transition-delay: ${(props: TLineProps) => (props.isHidden ? 0.75 : 0)}s;
 `
 
 export const LineInfo = styled.div`
