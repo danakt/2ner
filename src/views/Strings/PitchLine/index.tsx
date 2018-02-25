@@ -81,10 +81,6 @@ export class PitchLine extends React.Component<TProps, TState> {
     }
   }
 
-  public componentDidUpdate() {
-    console.log(this.state.pitch)
-  }
-
   /** Render */
   public render() {
     const { extPitchList, pitch } = this.state
