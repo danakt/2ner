@@ -7,7 +7,9 @@ type TLineProps = {
 
 export const Line = styled.div.attrs<TLineProps>({
   style: (props: TLineProps) => ({
-    top: props.y + '%'
+    top:                props.y + '%',
+    opacity:            props.isHidden ? 0 : 1,
+    transitionDuration: (props.isHidden ? 1.5 : 0.1) + 's'
   })
 })`
   position: absolute;
@@ -15,9 +17,8 @@ export const Line = styled.div.attrs<TLineProps>({
   height: 1px;
   width: 100%;
   background-color: blue;
-  opacity: ${(props: TLineProps) => (props.isHidden ? 0 : 1)};
-  transition: top 0.1s ease-out, opacity 0.5s ease-out;
-  transition-delay: ${(props: TLineProps) => (props.isHidden ? 0.75 : 0)}s;
+  transition: ease-out;
+  transition-property: top, opacity;
 `
 
 export const LineInfo = styled.div`
