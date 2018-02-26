@@ -2,9 +2,10 @@ import styled from 'styled-components'
 
 export const StringsWrapper = styled.div`
   display: flex;
+  position: relative;
   flex-direction: column;
   justify-content: space-evenly;
-  height: 100%;
+  height: calc(100% - 200px);
   width: 100%;
 `
 

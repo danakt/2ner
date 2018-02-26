@@ -29,11 +29,11 @@ export class Strings extends React.Component<TProps> {
               </StringInfo>
             </String>
           ))}
-        </StringsWrapper>
 
-        <PitchLine pitch={currentPitch} pitchList={pitchList}>
-          <Visualization buffer={currentBuffer} />
-        </PitchLine>
+          <PitchLine pitch={currentPitch} pitchList={pitchList}>
+            <Visualization buffer={currentBuffer} />
+          </PitchLine>
+        </StringsWrapper>
       </React.Fragment>
     )
   }
