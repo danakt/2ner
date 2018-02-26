@@ -95,10 +95,9 @@ export function getPitch(
  */
 export async function startAudioProcessing(
   audioStream: MediaStream,
+  bufferSize: number = 2 ** 11,
   callback: (pitch: number, buffer?: Float32Array) => void
 ): Promise<() => void> {
-  const BUFFER_SIZE: number = 2 ** 11 // 2048
-
   const audioContext = new AudioContext()
   await audioContext.resume()
 
@@ -107,7 +106,7 @@ export async function startAudioProcessing(
   )
   const analyser: AnalyserNode = audioContext.createAnalyser()
   const script: ScriptProcessorNode = audioContext.createScriptProcessor(
-    BUFFER_SIZE,
+    bufferSize,
     1,
     1
   )

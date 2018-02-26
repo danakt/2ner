@@ -6,6 +6,9 @@ export class StoreMedia {
   /** Variable for saving function to cancel pitch update */
   private _stopAudioProcessing: void | VoidFunction = undefined
 
+  /** Size of audio buffer */
+  @observable public bufferSize: number = 2048
+
   /** Audio stream */
   @observable public audioStream: MediaStream | null | void = undefined
 
@@ -38,6 +41,7 @@ export class StoreMedia {
 
       this._stopAudioProcessing = await startAudioProcessing(
         stream as MediaStream,
+        this.bufferSize,
         (pitch, buffer) => {
           throttledPitchUpdate(pitch, buffer)
         }

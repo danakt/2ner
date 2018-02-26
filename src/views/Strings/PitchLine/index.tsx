@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Line, LineInfo } from './styles'
+import { Line, LineInfo, VisualizationWrapper } from './styles'
 
 type TProps = {
   pitchList: number[]
@@ -91,7 +91,7 @@ export class PitchLine extends React.Component<TProps, TState> {
         y={PitchLine.getLinePosition(pitch, extPitchList)}
       >
         <LineInfo>{pitch.toFixed(2)} hz</LineInfo>
-        {this.props.children}
+        <VisualizationWrapper>{this.props.children}</VisualizationWrapper>
       </Line>
     )
   }

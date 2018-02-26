@@ -31,3 +31,10 @@ export const LineInfo = styled.div`
   font-size: 16px;
   color: blue;
 `
+export const VisualizationWrapper = styled.div`
+  position: absolute;
+  left: 0;
+  top: 100%;
+  width: 100%;
+  transform: translateY(-50%);
+`
