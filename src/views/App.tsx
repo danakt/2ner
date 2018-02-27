@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { observer } from 'mobx-react'
-// import { inject } from 'mobx-react'
 import { Strings } from './Strings'
 import { AudioRequestModal } from './AudioRequestModal'
 import { Stores } from '~/stores'
@@ -35,8 +34,8 @@ export class App extends React.Component<TProps> {
 
   public render() {
     const { audioStream } = this.props.storeMedia
-    const isAudioRequestSended = audioStream !== undefined
-    const issetAudioStream: boolean = !!audioStream
+    const isAudioRequestSent = audioStream !== undefined
+    const isSetAudioStream: boolean = !!audioStream
 
     return (
       <React.Fragment>
@@ -45,7 +44,7 @@ export class App extends React.Component<TProps> {
           storeMedia={this.props.storeMedia}
         />
 
-        <AudioRequestModal showed={isAudioRequestSended && !issetAudioStream} />
+        <AudioRequestModal showed={isAudioRequestSent && !isSetAudioStream} />
       </React.Fragment>
     )
   }

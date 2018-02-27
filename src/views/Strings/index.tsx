@@ -5,6 +5,7 @@ import { StoreInstruments } from '~/stores/instruments'
 import { StoreMedia } from '~/stores/media'
 import { StringsWrapper, String, StringInfo } from './styles'
 import { PitchLine } from './PitchLine'
+import { Visualization } from './Visualization'
 
 type TProps = {
   storeInstruments: StoreInstruments
@@ -16,7 +17,7 @@ type TProps = {
 export class Strings extends React.Component<TProps> {
   public render() {
     const { pitchList } = this.props.storeInstruments.currentTuning
-    const { currentPitch } = this.props.storeMedia
+    const { currentPitch, currentBuffer } = this.props.storeMedia
 
     return (
       <React.Fragment>
@@ -24,13 +25,15 @@ export class Strings extends React.Component<TProps> {
           {pitchList.map((item, i) => (
             <String key={item} size={pitchList.length - (i * 0.7 + 1)}>
               <StringInfo>
-                {getNoteNameFromPitch(item)} {item.toFixed(2)} hz
+                {getNoteNameFromPitch(item)} {item.toFixed(2)} Hz
               </StringInfo>
             </String>
           ))}
-        </StringsWrapper>
 
-        <PitchLine pitch={currentPitch} pitchList={pitchList} />
+          <PitchLine pitch={currentPitch} pitchList={pitchList}>
+            <Visualization buffer={currentBuffer} />
+          </PitchLine>
+        </StringsWrapper>
       </React.Fragment>
     )
   }

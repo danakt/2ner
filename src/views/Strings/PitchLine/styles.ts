@@ -25,9 +25,17 @@ export const LineInfo = styled.div`
   position: absolute;
   right: 50%;
   top: 50%;
-  margin-top: -24px;
+  margin-top: -28px;
   margin-right: 50px;
   color: #999;
   font-size: 16px;
   color: blue;
+`
+export const VisualizationWrapper = styled.div`
+  position: absolute;
+  left: 0;
+  top: 100%;
+  width: 100%;
+  transform: translateY(-50%);
+  opacity: 0.5;
 `

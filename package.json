@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --debug --devtool cheap-module-source-map --output-pathinfo --history-api-fallback --hot --inline --progress --colors --port 3000",
+    "start":
+      "webpack-dev-server --debug --devtool cheap-module-source-map --output-pathinfo --history-api-fallback --https --hot --inline --progress --colors --port 3000 --host 0.0.0.0",
     "build": "webpack -p --progress --colors"
   },
   "author": "Danakt Frost",
