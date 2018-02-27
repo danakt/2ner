@@ -4,7 +4,7 @@ declare interface ITuning {
   pitchList: number[]
 }
 
-/** Preset type */
+/** Instrument type */
 declare interface IInstrument {
   name: string
   tunings: ITuning[]
