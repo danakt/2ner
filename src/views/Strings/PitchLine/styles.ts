@@ -26,7 +26,7 @@ export const LineInfo = styled.div`
   right: 50%;
   top: 50%;
   margin-top: -28px;
-  margin-right: 50px;
+  margin-right: 30px;
   color: #999;
   font-size: 16px;
   color: blue;

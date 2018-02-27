@@ -22,11 +22,12 @@ export const String = styled.div`
     position: absolute;
     left: 50%;
     top: 0;
-    height: ${(props: TString) => props.size}px;
-    width: ${(props: TString) => props.size}px;
-    margin-left: -${(props: TString) => props.size / 2}px;
-    background-color: #333;
-    /* border-radius: 50%; */
+    height: ${(props: TString) => Math.round(props.size) + 4}px;
+    width: ${(props: TString) => Math.round(props.size) + 4}px;
+    margin-left: -${(props: TString) => (Math.round(props.size) + 4) / 2}px;
+    margin-top: -2px;
+    background-color: #777;
+    border-radius: 50%;
   }
 `
 
@@ -35,7 +36,7 @@ export const StringInfo = styled.div`
   left: 50%;
   top: 50%;
   margin-top: -28px;
-  margin-left: 50px;
+  margin-left: 30px;
   color: #999;
   font-size: 16px;
 `
