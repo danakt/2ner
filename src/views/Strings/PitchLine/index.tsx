@@ -92,7 +92,7 @@ export class PitchLine extends React.Component<TProps, TState> {
         y={PitchLine.getLinePosition(pitch, extPitchList)}
       >
         <LineInfo>
-          {getNoteNameFromPitch(pitch)} {pitch.toFixed(2)} hz
+          {getNoteNameFromPitch(pitch)} {pitch.toFixed(2)} Hz
         </LineInfo>
         <VisualizationWrapper>{this.props.children}</VisualizationWrapper>
       </Line>

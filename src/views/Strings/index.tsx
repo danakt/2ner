@@ -25,7 +25,7 @@ export class Strings extends React.Component<TProps> {
           {pitchList.map((item, i) => (
             <String key={item} size={pitchList.length - (i * 0.7 + 1)}>
               <StringInfo>
-                {getNoteNameFromPitch(item)} {item.toFixed(2)} hz
+                {getNoteNameFromPitch(item)} {item.toFixed(2)} Hz
               </StringInfo>
             </String>
           ))}
