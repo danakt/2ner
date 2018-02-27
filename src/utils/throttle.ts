@@ -1,5 +1,4 @@
 /* eslint-disable space-before-function-paren */
-
 /**
  * Creates wrapper for throttling a function
  * @param time Delay time
@@ -13,7 +12,7 @@ export function throttle<T extends (...a: any[]) => any>(
 ): T {
   let canRun: boolean = true
 
-  const ret = (...args: any[]) => {
+  const callFn = (...args: any[]) => {
     if (!canRun) {
       return
     }
@@ -27,5 +26,5 @@ export function throttle<T extends (...a: any[]) => any>(
     return fn.apply(this, args)
   }
 
-  return ret as T
+  return callFn as T
 }
