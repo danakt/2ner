@@ -1,7 +1,7 @@
 /**
  * Guitar tuning
  */
-export const guitar: IIntrument = {
+export const guitar: IInstrument = {
   name:    'Guitar',
   tunings: [
     {

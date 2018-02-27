@@ -5,7 +5,7 @@ declare interface ITuning {
 }
 
 /** Preset type */
-declare interface IIntrument {
+declare interface IInstrument {
   name: string
   tunings: ITuning[]
 }
