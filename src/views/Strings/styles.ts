@@ -22,7 +22,7 @@ export const StringInfo = styled.div`
   position: absolute;
   left: 50%;
   top: 50%;
-  margin-top: -24px;
+  margin-top: -28px;
   margin-left: 50px;
   color: #999;
   font-size: 16px;
