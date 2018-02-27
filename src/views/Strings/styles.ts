@@ -16,6 +16,18 @@ export const String = styled.div`
   background: #ebebeb;
   position: relative;
   height: ${(props: TString) => props.size}px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    height: ${(props: TString) => props.size}px;
+    width: ${(props: TString) => props.size}px;
+    margin-left: -${(props: TString) => props.size / 2}px;
+    background-color: #333;
+    /* border-radius: 50%; */
+  }
 `
 
 export const StringInfo = styled.div`
