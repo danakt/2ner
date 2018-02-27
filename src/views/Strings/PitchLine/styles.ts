@@ -37,4 +37,5 @@ export const VisualizationWrapper = styled.div`
   top: 100%;
   width: 100%;
   transform: translateY(-50%);
+  opacity: 0.5;
 `
