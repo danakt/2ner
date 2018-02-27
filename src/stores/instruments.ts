@@ -17,7 +17,7 @@ export class StoreInstruments {
   @observable public currentTuningIndex: number = 0
 
   /**
-   * Cureent instrument
+   * Current instrument
    */
   @computed
   get currentTuning() {
@@ -26,7 +26,7 @@ export class StoreInstruments {
   }
 
   /**
-   * Changes the instument
+   * Changes the instrument
    * @param {string} newInstrumentName Instrument name
    * @param {number} newTuningIndex Tuning index
    */
