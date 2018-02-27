@@ -13,6 +13,11 @@ type TState = {
   visualizationHeight: number
 }
 
+/**
+ * Number of visualization corners
+ */
+const POINTS_NUM = 128
+
 export class Visualization extends React.Component<TProps, TState> {
   /** */
   private static prepareBuffer(
@@ -20,6 +25,9 @@ export class Visualization extends React.Component<TProps, TState> {
     pointsNum: number,
     height: number
   ): number[][] {
+    // Minus height of the line * 2
+    const fixedHeight: number = height - 2
+
     if (buffer == null) {
       return new Array(pointsNum).fill(0)
     }
@@ -31,7 +39,8 @@ export class Visualization extends React.Component<TProps, TState> {
 
     for (let i = 0; i < pointsNum * step; i += step) {
       const x = i
-      const y = Math.min((buffer[i] + offset) * height, height)
+      const y = Math.min((buffer[i] + offset) * fixedHeight, fixedHeight)
+
       pointsArray.push([x, y])
     }
 
@@ -43,9 +52,9 @@ export class Visualization extends React.Component<TProps, TState> {
    */
   public state = {
     windowWidth:         window.innerWidth,
-    pointsNum:           64,
-    points:              new Array(64),
-    prevPoints:          new Array(64),
+    pointsNum:           POINTS_NUM,
+    points:              new Array(POINTS_NUM),
+    prevPoints:          new Array(POINTS_NUM),
     visualizationHeight: 100
   }
 
