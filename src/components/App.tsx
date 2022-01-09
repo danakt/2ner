@@ -1,10 +1,10 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { Strings } from './Strings';
 import { MediaContext } from '../contexts/MediaContext';
-import { Modal } from './Modal';
 import { GlobalStyles } from './GlobalStyles';
 import { Indicator } from './Indicator';
+import { getNoteNameFromPitch } from '../libs/notes';
 
 const Body = styled.div`
   padding: 30px 0 100px;
@@ -54,26 +54,7 @@ const Button = styled.button`
 `;
 
 export const App = () => {
-  const [isStarted, setStared] = useState(false);
-
-  const { setAudioStream } = useContext(MediaContext);
-
-  const requestAudio = () => {
-    // Getting media stream
-    navigator.mediaDevices
-      .getUserMedia({ audio: true })
-      .then((stream) => {
-        setAudioStream(stream);
-        setStared(true);
-      })
-      .catch((err) => {
-        if (err) {
-          // TODO make error handle
-        }
-
-        setAudioStream(null);
-      });
-  };
+  const { requestAudio, audioStream, displayedPitch, setAutoSelectEnabled } = useContext(MediaContext);
 
   return (
     <>
@@ -89,8 +70,19 @@ export const App = () => {
 
         <Wrapper>
           <Content>
-            {isStarted ? (
+            {!!audioStream ? (
               <>
+                <h1>{displayedPitch.toFixed(2)} Hz</h1>
+                <h1>Note: {getNoteNameFromPitch(displayedPitch)}</h1>
+                <label>
+                  <input
+                    type="checkbox"
+                    onChange={(event) => {
+                      setAutoSelectEnabled(event.target.checked);
+                    }}
+                  />{' '}
+                  Автовыбор
+                </label>
                 <Indicator />
                 <Strings />
               </>

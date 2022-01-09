@@ -1,27 +1,28 @@
-import React, { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
+import React, { createContext, PropsWithChildren, useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { getPitch } from '../libs/audio';
 import { throttle } from '../utils/throttle';
 import { InstrumentsContext } from './InstrumentsContext';
 import { useLatest } from '../hooks/useLatest';
-import { PITCH_RANGE } from '../constants/indicator';
+import { AUTO_SELECT_PITCH_RANGE, TUNING_PITCH_RANGE } from '../constants/indicator';
+
+const PITCH_UPDATE_TIME = 50;
 
 export type MediaContextData = {
-  /** Size of audio buffer */
-  bufferSize: number;
   /** Audio stream */
   audioStream?: MediaStream | null;
   /** Current audio pitch */
   currentPitch: number | null;
   /** Current audio pitch to display */
   displayedPitch: number;
-  /** Percentage of tuning from -1 to 1; 0 — is a tuned sound */
-  pitchPercent: number;
+  /** Indication of tuning from -1 to 1; 0 — is a tuned sound.
+   * The range is determined by the `PITCH_RANGE` variable */
+  pitchIndicator: number;
   /** Current audio buffer */
   currentBuffer?: Float32Array;
-  /** Sets audio stream */
-  setAudioStream(stream?: MediaStream | null): void;
-  /** Updates the pitch */
-  updatePitch(pitch: number, buffer?: Float32Array): void;
+  /** Requests user for microphone record */
+  requestAudio(): Promise<void>;
+  /** Toggle string autoselect by sound */
+  setAutoSelectEnabled: (isEnabled: boolean) => void;
 };
 
 export const MediaContext = createContext<MediaContextData>({} as any);
@@ -73,6 +74,7 @@ export const MediaContextProvider = (props: PropsWithChildren<{}>) => {
   const {
     currentTuning: { pitchList },
     currentStringIndex,
+    changeString,
   } = useContext(InstrumentsContext);
 
   const bufferSize = 2048;
@@ -80,8 +82,9 @@ export const MediaContextProvider = (props: PropsWithChildren<{}>) => {
   const [audioStream, setAudioStream] = useState<MediaStream | null>();
   const [currentBuffer, setCurrentBuffer] = useState<Float32Array>();
   const [currentPitch, setCurrentPitch] = useState<number | null>(null);
-  const [displayedPitch, setDisplayedPitch] = useState<number>(0);
-  const [pitchPercent, setPitchPercent] = useState<number>(0);
+  const [displayedPitch, setDisplayedPitch] = useState(0);
+  const [pitchIndicator, setPitchIndicator] = useState(0);
+  const [isAutoSelectEnabled, setAutoSelectEnabled] = useState(false);
   const latestPitchRef = useLatest(displayedPitch);
 
   const updatePitch = (pitch: number | null, buffer?: Float32Array) => {
@@ -89,9 +92,22 @@ export const MediaContextProvider = (props: PropsWithChildren<{}>) => {
     setCurrentPitch(pitch);
   };
 
+  const requestAudio = async () => {
+    // Getting media stream
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+      setAudioStream(stream);
+    } catch (err) {
+      // TODO: handle the error
+
+      setAudioStream(null);
+    }
+  };
+
   useEffect(() => {
     if (audioStream != null) {
-      const throttledPitchUpdate = throttle(100, (pitch: number | null, buffer?: Float32Array) => {
+      const throttledPitchUpdate = throttle(PITCH_UPDATE_TIME, (pitch: number | null, buffer?: Float32Array) => {
         if (pitch == null) {
           updatePitch(null, buffer);
           return;
@@ -108,12 +124,10 @@ export const MediaContextProvider = (props: PropsWithChildren<{}>) => {
     }
   }, [audioStream]);
 
-  useEffect(() => {
+  // Displayed pitch and pitch indicator
+  useLayoutEffect(() => {
     const soughtPitch = pitchList[currentStringIndex];
-    const [minPitch, maxPitch] = [
-      soughtPitch - PITCH_RANGE / 2, //
-      soughtPitch + PITCH_RANGE / 2,
-    ];
+    const [minPitch, maxPitch] = [soughtPitch - TUNING_PITCH_RANGE / 2, soughtPitch + TUNING_PITCH_RANGE / 2];
 
     if (currentPitch == null || currentPitch < minPitch || currentPitch > maxPitch) {
       return;
@@ -125,20 +139,36 @@ export const MediaContextProvider = (props: PropsWithChildren<{}>) => {
         : currentPitch;
 
     setDisplayedPitch(interpolatedValue);
-    setPitchPercent((currentPitch - soughtPitch) / PITCH_RANGE);
+    setPitchIndicator((currentPitch - soughtPitch) / TUNING_PITCH_RANGE);
   }, [currentPitch, pitchList, currentStringIndex]);
+
+  // String auto select
+  useLayoutEffect(() => {
+    if (!isAutoSelectEnabled || currentPitch == null) {
+      return;
+    }
+
+    for (let i = 0; i < pitchList.length; i++) {
+      const pitch = pitchList[i];
+      const [minPitch, maxPitch] = [pitch - AUTO_SELECT_PITCH_RANGE / 2, pitch + AUTO_SELECT_PITCH_RANGE / 2];
+
+      if (currentPitch > minPitch && currentPitch < maxPitch) {
+        changeString(i);
+        return;
+      }
+    }
+  }, [currentPitch, pitchList]);
 
   return (
     <MediaContext.Provider
       value={{
-        bufferSize,
         audioStream,
         currentPitch,
         displayedPitch,
-        pitchPercent,
+        pitchIndicator,
         currentBuffer,
-        setAudioStream,
-        updatePitch,
+        requestAudio,
+        setAutoSelectEnabled,
       }}
     >
       {props.children}

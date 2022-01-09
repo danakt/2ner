@@ -54,14 +54,12 @@ const Arrow = styled.div`
 `;
 
 export const Indicator = () => {
-  const { displayedPitch, pitchPercent } = useContext(MediaContext);
+  const { pitchIndicator } = useContext(MediaContext);
 
-  const deg = pitchPercent * 90;
+  const deg = pitchIndicator * 90;
 
   return (
     <>
-      <h1>{displayedPitch.toFixed(2)} Hz</h1>
-      <h1>Note: {getNoteNameFromPitch(displayedPitch)}</h1>
       <Wrapper>
         <IndicatorBox>
           <Arrow
