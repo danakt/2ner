@@ -16,20 +16,7 @@
  *  6   | 108  109  110  111  112  113  114  115  116  117  118  119
  *  7   | 120  121  122  123  124  125  126  127
  */
-const NOTE_STRINGS = [
-  'C',
-  'C#',
-  'D',
-  'D#',
-  'E',
-  'F',
-  'F#',
-  'G',
-  'G#',
-  'A',
-  'A#',
-  'B'
-]
+const NOTE_STRINGS = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
 /**
  * Returns note number from pitch
@@ -37,8 +24,8 @@ const NOTE_STRINGS = [
  * @return {number}
  */
 export function getNoteNumberFromPitch(frequency: number): number {
-  const noteNum: number = 12 * (Math.log(frequency / 440) / Math.log(2))
-  return Math.round(noteNum) + 69
+  const noteNum: number = 12 * (Math.log(frequency / 440) / Math.log(2));
+  return Math.round(noteNum) + 69;
 }
 
 /**
@@ -47,7 +34,7 @@ export function getNoteNumberFromPitch(frequency: number): number {
  * @return {number}
  */
 export function getFrequencyFromNoteNumber(noteNumber: number): number {
-  return 440 * Math.pow(2, (noteNumber - 69) / 12)
+  return 440 * Math.pow(2, (noteNumber - 69) / 12);
 }
 
 /**
@@ -56,10 +43,7 @@ export function getFrequencyFromNoteNumber(noteNumber: number): number {
  * @param {number} note
  */
 export function getCentsOffFromPitch(frequency: number, note: number) {
-  return Math.floor(
-    1200
-      * (Math.log(frequency / getFrequencyFromNoteNumber(note)) / Math.log(2))
-  )
+  return Math.floor(1200 * (Math.log(frequency / getFrequencyFromNoteNumber(note)) / Math.log(2)));
 }
 
 /**
@@ -68,5 +52,5 @@ export function getCentsOffFromPitch(frequency: number, note: number) {
  * @return {string}
  */
 export function getNoteNameFromPitch(frequency: number): string {
-  return NOTE_STRINGS[getNoteNumberFromPitch(frequency) % 12]
+  return NOTE_STRINGS[getNoteNumberFromPitch(frequency) % 12];
 }

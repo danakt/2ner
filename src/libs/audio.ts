@@ -1,140 +1,134 @@
-/**
- * Calculates root mean square of audio buffer
- * @private
- * @param  {Float32Array} audioBuffer
- * @return {number}
- */
-function calculateRMS(audioBuffer: Float32Array): number {
-  const bufLength = audioBuffer.length
+const LOWER_PITCH_CUTOFF = 30.0;
+const SMALL_CUTOFF = 0.5;
+const CUTOFF = 0.93;
 
-  const rms: number = audioBuffer.reduce((acc: number, item: number) => {
-    return acc + item ** 2
-  }, 0)
+// /**
+//  * Calculates root mean square of audio buffer
+//  */
+// export function calculateRMS(audioBuffer: Float32Array): number {
+//   const bufLength = audioBuffer.length;
 
-  return Math.sqrt(rms / bufLength)
-}
+//   const rms: number = audioBuffer.reduce((acc: number, item: number) => {
+//     return acc + item ** 2;
+//   }, 0);
 
-/**
- * Returns pitch from audio buffer
- * @param  {Float32Array} audioBuffer
- * @param  {number} sampleRate
- * @return {number}
- */
-export function getPitch(
-  audioBuffer: Float32Array,
-  sampleRate: number
-): number {
-  const SIZE = audioBuffer.length
-  const MAX_SAMPLES = Math.floor(SIZE / 2)
-  const MIN_SAMPLES = 0
+//   return Math.sqrt(rms / bufLength);
+// }
 
-  const rms = calculateRMS(audioBuffer)
-  const correlations = new Array(MAX_SAMPLES)
+export function getPitch(buffer: Float32Array, sampleRate: number) {
+  const nsdf = normalizedSquareDifference(buffer);
+  const maxPositions = peakPicking(nsdf);
+  const estimates = [];
 
-  let bestOffset = -1
-  let bestCorrelation = 0
-  let foundGoodCorrelation = false
-  let correlation
+  let highestAmplitude = Number.MIN_SAFE_INTEGER;
 
-  // Not enough signal
-  if (rms < 0.01) {
-    return -1
+  for (let i of maxPositions) {
+    highestAmplitude = Math.max(highestAmplitude, nsdf[i]);
+    if (nsdf[i] > SMALL_CUTOFF) {
+      let est = parabolicInterpolation(nsdf, i);
+      estimates.push(est);
+      highestAmplitude = Math.max(highestAmplitude, est[1]);
+    }
   }
 
-  let lastCorrelation = 1
+  if (estimates.length === 0) {
+    return null;
+  }
 
-  for (let offset = MIN_SAMPLES; offset < MAX_SAMPLES; offset++) {
-    correlation = 0
+  const actualCutoff = CUTOFF * highestAmplitude;
+  let period = 0.0;
 
-    for (let i = 0; i < MAX_SAMPLES; i++) {
-      correlation += Math.abs(audioBuffer[i] - audioBuffer[i + offset])
+  for (const est of estimates) {
+    if (est[1] >= actualCutoff) {
+      period = est[0];
+      break;
     }
+  }
 
-    correlation = 1 - correlation / MAX_SAMPLES
+  const pitchEst = sampleRate / period;
 
-    // store it, for the tweaking we need to do below.
-    correlations[offset] = correlation
+  return pitchEst > LOWER_PITCH_CUTOFF ? pitchEst : -1;
+}
 
-    if (correlation > 0.9 && correlation > lastCorrelation) {
-      foundGoodCorrelation = true
-      if (correlation > bestCorrelation) {
-        bestCorrelation = correlation
-        bestOffset = offset
+function peakPicking(nsdf: number[]) {
+  const maxPositions = [];
+  let pos = 0;
+  let curMaxPos = 0;
+  const len = nsdf.length;
+
+  while (pos < (len - 1) / 3 && nsdf[pos] > 0.0) {
+    pos++;
+  }
+  while (pos < len - 1 && nsdf[0] <= 0.0) {
+    pos++;
+  }
+
+  if (pos === 0) {
+    pos = 1;
+  }
+
+  while (pos < len - 1) {
+    if (nsdf[pos] < nsdf[pos - 1] && nsdf[pos] >= nsdf[pos + 1]) {
+      if (curMaxPos === 0) {
+        curMaxPos = pos;
+      } else if (nsdf[pos] > nsdf[curMaxPos]) {
+        curMaxPos = pos;
       }
-    } else if (foundGoodCorrelation) {
-      // short-circuit - we found a good correlation, then a bad one, so we'd
-      // just be seeing copies from here. Now we need to tweak the offset —
-      // by interpolating between the values to the left and right of the best
-      // offset, and shifting it a bit.  This is complex, and HACKY in this
-      // code (happy to take PRs!) - we need to do a curve fit on
-      // correlations[] around bestOffset in order to better determine precise
-      // (anti-aliased) offset.
-      // We know bestOffset >=1, since foundGoodCorrelation cannot go to true
-      // until the second pass (offset=1), and we can't drop into this clause
-      // until the following pass (else if).
-      const shift
-        = (correlations[bestOffset + 1] - correlations[bestOffset - 1])
-        / correlations[bestOffset]
-
-      return sampleRate / (bestOffset + 8 * shift)
     }
 
-    lastCorrelation = correlation
+    pos++;
+
+    if (pos < len - 1 && nsdf[pos] <= 0.0) {
+      if (curMaxPos > 0) {
+        maxPositions.push(curMaxPos);
+        curMaxPos = 0;
+      }
+      while (pos < len - 1 && nsdf[0] <= 0.0) {
+        pos++;
+      }
+    }
   }
 
-  if (bestCorrelation > 0.01) {
-    return sampleRate / bestOffset
+  if (curMaxPos > 0) {
+    maxPositions.push(curMaxPos);
   }
 
-  return -1
+  return maxPositions;
 }
 
-/**
- * Gets and starts process the audio stream, sending gotten pitch to callback
- * @return {Promise<Function>} Function to stop the audio stream processing
- */
-export async function startAudioProcessing(
-  audioStream: MediaStream,
-  bufferSize: number = 2 ** 11,
-  callback: (pitch: number, buffer?: Float32Array) => void
-): Promise<() => void> {
-  const audioContext = new AudioContext()
-  await audioContext.resume()
+function normalizedSquareDifference(buffer: Float32Array) {
+  const len = buffer.length;
+  const nsdf: number[] = new Array(len).fill(0.0);
 
-  const src: MediaStreamAudioSourceNode = audioContext.createMediaStreamSource(
-    audioStream
-  )
-  const analyser: AnalyserNode = audioContext.createAnalyser()
-  const script: ScriptProcessorNode = audioContext.createScriptProcessor(
-    bufferSize,
-    1,
-    1
-  )
+  for (let tau = 0; tau < len; tau++) {
+    let acf = 0.0;
+    let divisorM = 0.0;
 
-  src.connect(analyser)
-  analyser.connect(script)
-  script.connect(audioContext.destination)
+    for (let i = 0; i < len - tau; i++) {
+      acf += buffer[i] * buffer[i + tau];
+      let el1 = buffer[i];
+      let p1 = Math.pow(el1, 2);
+      let el2 = buffer[i + tau];
+      let p2 = Math.pow(el2, 2);
+      divisorM += p1 + p2;
+    }
 
-  /**
-   * Handler of audio process event
-   * @param {AudioProcessingEvent} event
-   */
-  const handleAudioProcess = function handleAudioProcess(
-    event: AudioProcessingEvent
-  ): void {
-    const buffer: Float32Array = event.inputBuffer.getChannelData(0).slice()
-    const pitch = getPitch(buffer, audioContext.sampleRate)
-
-    callback(pitch, buffer)
+    nsdf[tau] = (2.0 * acf) / divisorM;
   }
 
-  script.addEventListener('audioprocess', handleAudioProcess)
+  return nsdf;
+}
 
-  return function stopAudioProcessing() {
-    audioStream.getTracks().forEach(track => track.stop())
-    src.disconnect()
-    analyser.disconnect()
-    script.removeEventListener('audioprocess', handleAudioProcess)
-    script.disconnect()
+function parabolicInterpolation(nsdf: number[], tau: number) {
+  const nsdfa = nsdf[tau - 1];
+  const nsdfb = nsdf[tau];
+  const nsdfc = nsdf[tau + 1];
+  const bottom = nsdfc + nsdfa - 2.0 * nsdfb;
+
+  if (bottom === 0.0) {
+    return [tau, nsdfb];
+  } else {
+    let delta = nsdfa - nsdfc;
+    return [tau + delta / (2.0 * bottom), nsdfb - (delta * delta) / (8.0 * bottom)];
   }
 }

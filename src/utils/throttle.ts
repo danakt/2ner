@@ -6,26 +6,22 @@
  * @param fn Any function for throttle
  * @return Wrapper of function
  */
-export function throttle<T extends (...a: any[]) => any>(
-  this: any,
-  time: number,
-  fn: T
-): T {
-  let canRun: boolean = true
+export function throttle<T extends (...a: any[]) => any>(this: any, time: number, fn: T): T {
+  let canRun: boolean = true;
 
   const ret = (...args: any[]) => {
     if (!canRun) {
-      return
+      return;
     }
 
-    canRun = false
+    canRun = false;
 
     setTimeout(() => {
-      canRun = true
-    }, time)
+      canRun = true;
+    }, time);
 
-    return fn.apply(this, args)
-  }
+    return fn.apply(this, args);
+  };
 
-  return ret as T
+  return ret as T;
 }
