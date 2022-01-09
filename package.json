@@ -2,9 +2,9 @@
   "name": "2ner",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
-    "start": "yarn parcel src/index.html --host 0.0.0.0 --https"
+    "start": "parcel src/index.html --host 0.0.0.0 --https",
+    "build": "parcel build src/index.html --dist-dir docs --public-url ./"
   },
   "author": "Danakt Frost",
   "license": "MIT",
