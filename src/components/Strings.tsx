@@ -49,21 +49,23 @@ export const StringInfo = styled.div`
 `;
 
 export const Strings = () => {
-  const {
-    currentTuning: { pitchList },
-    currentStringIndex,
-    changeString,
-  } = useContext(InstrumentsContext);
+  const { instrumentsMap, activeInstrument, activeTuningIndex, activeStringIndex, setActiveStringIndex } =
+    useContext(InstrumentsContext);
+  const { setAutoSelectEnabled } = useContext(MediaContext);
+  const { pitchList } = instrumentsMap[activeInstrument]?.tunings[activeTuningIndex] ?? {};
 
   return (
     <React.Fragment>
       <StringsWrapper>
         {pitchList.map((item, i) => (
           <String
-            key={item}
-            size={pitchList.length - i * 0.7 + 1}
-            className={classNames({ selected: i === currentStringIndex })}
-            onClick={() => changeString(i)}
+            key={i}
+            size={Math.max(3, (1000 - item) / 150)}
+            className={classNames({ selected: i === activeStringIndex })}
+            onClick={() => {
+              setActiveStringIndex(i);
+              setAutoSelectEnabled(false);
+            }}
           >
             <StringInfo>
               {getNoteNameFromPitch(item)} {item.toFixed(2)} Hz

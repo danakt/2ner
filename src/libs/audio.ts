@@ -2,19 +2,6 @@ const LOWER_PITCH_CUTOFF = 30.0;
 const SMALL_CUTOFF = 0.5;
 const CUTOFF = 0.93;
 
-// /**
-//  * Calculates root mean square of audio buffer
-//  */
-// export function calculateRMS(audioBuffer: Float32Array): number {
-//   const bufLength = audioBuffer.length;
-
-//   const rms: number = audioBuffer.reduce((acc: number, item: number) => {
-//     return acc + item ** 2;
-//   }, 0);
-
-//   return Math.sqrt(rms / bufLength);
-// }
-
 export function getPitch(buffer: Float32Array, sampleRate: number) {
   const nsdf = normalizedSquareDifference(buffer);
   const maxPositions = peakPicking(nsdf);

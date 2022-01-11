@@ -18,39 +18,25 @@
  */
 const NOTE_STRINGS = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
-/**
- * Returns note number from pitch
- * @param  {number} frequency
- * @return {number}
- */
 export function getNoteNumberFromPitch(frequency: number): number {
-  const noteNum: number = 12 * (Math.log(frequency / 440) / Math.log(2));
+  const noteNum = 12 * (Math.log(frequency / 440) / Math.log(2));
   return Math.round(noteNum) + 69;
 }
 
-/**
- * Return pitch from notenumber
- * @param  {number} noteNumber
- * @return {number}
- */
 export function getFrequencyFromNoteNumber(noteNumber: number): number {
   return 440 * Math.pow(2, (noteNumber - 69) / 12);
 }
 
-/**
- * Returns cent off from pitch
- * @param {number} frequency
- * @param {number} note
- */
 export function getCentsOffFromPitch(frequency: number, note: number) {
   return Math.floor(1200 * (Math.log(frequency / getFrequencyFromNoteNumber(note)) / Math.log(2)));
 }
 
-/**
- * Returns note name from pitch
- * @param  {number} frequency
- * @return {string}
- */
 export function getNoteNameFromPitch(frequency: number): string {
-  return NOTE_STRINGS[getNoteNumberFromPitch(frequency) % 12];
+  if (frequency === 0) {
+    return '—';
+  }
+
+  const noteNumber = getNoteNumberFromPitch(frequency);
+
+  return NOTE_STRINGS[noteNumber % 12] + (Math.floor(noteNumber / 12) - 1);
 }

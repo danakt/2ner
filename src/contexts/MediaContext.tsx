@@ -8,20 +8,16 @@ import { AUTO_SELECT_PITCH_RANGE, TUNING_PITCH_RANGE } from '../constants/indica
 const PITCH_UPDATE_TIME = 50;
 
 export type MediaContextData = {
-  /** Audio stream */
   audioStream?: MediaStream | null;
-  /** Current audio pitch */
   currentPitch: number | null;
   /** Current audio pitch to display */
   displayedPitch: number;
   /** Indication of tuning from -1 to 1; 0 — is a tuned sound.
    * The range is determined by the `PITCH_RANGE` variable */
   pitchIndicator: number;
-  /** Current audio buffer */
   currentBuffer?: Float32Array;
-  /** Requests user for microphone record */
+  isAutoSelectEnabled: boolean;
   requestAudio(): Promise<void>;
-  /** Toggle string autoselect by sound */
   setAutoSelectEnabled: (isEnabled: boolean) => void;
 };
 
@@ -71,11 +67,9 @@ export function startAudioProcessing(
 }
 
 export const MediaContextProvider = (props: PropsWithChildren<{}>) => {
-  const {
-    currentTuning: { pitchList },
-    currentStringIndex,
-    changeString,
-  } = useContext(InstrumentsContext);
+  const { instrumentsMap, activeInstrument, activeTuningIndex, activeStringIndex, setActiveStringIndex } =
+    useContext(InstrumentsContext);
+  const { pitchList } = instrumentsMap[activeInstrument].tunings[activeTuningIndex];
 
   const bufferSize = 2048;
 
@@ -84,7 +78,7 @@ export const MediaContextProvider = (props: PropsWithChildren<{}>) => {
   const [currentPitch, setCurrentPitch] = useState<number | null>(null);
   const [displayedPitch, setDisplayedPitch] = useState(0);
   const [pitchIndicator, setPitchIndicator] = useState(0);
-  const [isAutoSelectEnabled, setAutoSelectEnabled] = useState(false);
+  const [isAutoSelectEnabled, setAutoSelectEnabled] = useState(true);
   const latestPitchRef = useLatest(displayedPitch);
 
   const updatePitch = (pitch: number | null, buffer?: Float32Array) => {
@@ -116,7 +110,7 @@ export const MediaContextProvider = (props: PropsWithChildren<{}>) => {
         updatePitch(pitch, buffer);
       });
 
-      const stopAudioProcessing = startAudioProcessing(audioStream as MediaStream, bufferSize, throttledPitchUpdate);
+      const stopAudioProcessing = startAudioProcessing(audioStream, bufferSize, throttledPitchUpdate);
 
       return () => {
         stopAudioProcessing();
@@ -126,7 +120,7 @@ export const MediaContextProvider = (props: PropsWithChildren<{}>) => {
 
   // Displayed pitch and pitch indicator
   useLayoutEffect(() => {
-    const soughtPitch = pitchList[currentStringIndex];
+    const soughtPitch = pitchList[activeStringIndex];
     const [minPitch, maxPitch] = [soughtPitch - TUNING_PITCH_RANGE / 2, soughtPitch + TUNING_PITCH_RANGE / 2];
 
     if (currentPitch == null || currentPitch < minPitch || currentPitch > maxPitch) {
@@ -140,7 +134,7 @@ export const MediaContextProvider = (props: PropsWithChildren<{}>) => {
 
     setDisplayedPitch(interpolatedValue);
     setPitchIndicator((currentPitch - soughtPitch) / TUNING_PITCH_RANGE);
-  }, [currentPitch, pitchList, currentStringIndex]);
+  }, [currentPitch, pitchList, activeStringIndex]);
 
   // String auto select
   useLayoutEffect(() => {
@@ -153,7 +147,7 @@ export const MediaContextProvider = (props: PropsWithChildren<{}>) => {
       const [minPitch, maxPitch] = [pitch - AUTO_SELECT_PITCH_RANGE / 2, pitch + AUTO_SELECT_PITCH_RANGE / 2];
 
       if (currentPitch > minPitch && currentPitch < maxPitch) {
-        changeString(i);
+        setActiveStringIndex(i);
         return;
       }
     }
@@ -167,6 +161,7 @@ export const MediaContextProvider = (props: PropsWithChildren<{}>) => {
         displayedPitch,
         pitchIndicator,
         currentBuffer,
+        isAutoSelectEnabled,
         requestAudio,
         setAutoSelectEnabled,
       }}

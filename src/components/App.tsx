@@ -5,6 +5,8 @@ import { MediaContext } from '../contexts/MediaContext';
 import { GlobalStyles } from './GlobalStyles';
 import { Indicator } from './Indicator';
 import { getNoteNameFromPitch } from '../libs/notes';
+import { InstrumentSelect } from './InstrumentSelect';
+import { TuningSelect } from './TuningSelect';
 
 const Body = styled.div`
   padding: 30px 0 100px;
@@ -54,7 +56,8 @@ const Button = styled.button`
 `;
 
 export const App = () => {
-  const { requestAudio, audioStream, displayedPitch, setAutoSelectEnabled } = useContext(MediaContext);
+  const { requestAudio, audioStream, displayedPitch, setAutoSelectEnabled, isAutoSelectEnabled } =
+    useContext(MediaContext);
 
   return (
     <>
@@ -72,10 +75,14 @@ export const App = () => {
           <Content>
             {!!audioStream ? (
               <>
+                <InstrumentSelect />
+                <TuningSelect />
+
                 <h1>{displayedPitch.toFixed(2)} Hz</h1>
                 <h1>Note: {getNoteNameFromPitch(displayedPitch)}</h1>
                 <label>
                   <input
+                    checked={isAutoSelectEnabled}
                     type="checkbox"
                     onChange={(event) => {
                       setAutoSelectEnabled(event.target.checked);
