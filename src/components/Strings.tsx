@@ -10,8 +10,8 @@ export const StringsWrapper = styled.div`
   position: relative;
   flex-direction: column;
   justify-content: space-evenly;
-  height: 400px;
-  width: 100%;
+  /* height: 400px; */
+  width: 50%;
 `;
 
 type TString = { size: number };
@@ -20,7 +20,7 @@ export const String = styled.div`
   width: 100%;
   position: relative;
   cursor: pointer;
-  padding: 20px 0;
+  padding: 10px 0;
   color: #999;
   transition: color 0.15s ease-out;
 
@@ -52,7 +52,7 @@ export const Strings = () => {
   const { instrumentsMap, activeInstrument, activeTuningIndex, activeStringIndex, setActiveStringIndex } =
     useContext(InstrumentsContext);
   const { setAutoSelectEnabled } = useContext(MediaContext);
-  const { pitchList } = instrumentsMap[activeInstrument]?.tunings[activeTuningIndex] ?? {};
+  const { pitchList } = instrumentsMap[activeInstrument].tunings[activeTuningIndex];
 
   return (
     <React.Fragment>

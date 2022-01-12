@@ -4,7 +4,6 @@ import { MediaContext } from '../contexts/MediaContext';
 import { getNoteNameFromPitch } from '../libs/notes';
 
 const Wrapper = styled.div`
-  width: 50%;
   height: 200px;
   margin: 0 auto;
 `;
@@ -12,7 +11,6 @@ const Wrapper = styled.div`
 const IndicatorBox = styled.div`
   width: 400px;
   height: 200px;
-  margin: 0 auto;
   position: absolute;
   overflow: hidden;
 

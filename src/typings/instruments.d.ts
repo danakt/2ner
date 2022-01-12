@@ -1,10 +1,9 @@
-/** Tuning type */
 declare interface ITuning {
   name: string;
   pitchList: number[];
+  group?: string;
 }
 
-/** Preset type */
 declare interface IInstrument {
   name: string;
   tunings: ITuning[];
