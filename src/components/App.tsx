@@ -56,7 +56,7 @@ const Button = styled.button`
 `;
 
 export const App = () => {
-  const { requestAudio, audioStream, displayedPitch, setAutoSelectEnabled, isAutoSelectEnabled } =
+  const { requestAudio, audioStream, displayedPitch, setAutoSelectEnabled, isAutoSelectEnabled, desiredPitch } =
     useContext(MediaContext);
 
   return (
@@ -78,7 +78,9 @@ export const App = () => {
                 <InstrumentSelect />
                 <TuningSelect />
 
-                <h1>{displayedPitch.toFixed(2)} Hz</h1>
+                <h1>
+                  {displayedPitch.toFixed(2)} Hz / {desiredPitch} Hz
+                </h1>
                 <h1>Note: {getNoteNameFromPitch(displayedPitch)}</h1>
                 <label>
                   <input

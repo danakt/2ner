@@ -15,6 +15,7 @@ export type MediaContextData = {
   /** Indication of tuning from -1 to 1; 0 — is a tuned sound.
    * The range is determined by the `PITCH_RANGE` variable */
   pitchIndicator: number;
+  desiredPitch: number;
   currentBuffer?: Float32Array;
   isAutoSelectEnabled: boolean;
   requestAudio(): Promise<void>;
@@ -81,6 +82,8 @@ export const MediaContextProvider = (props: PropsWithChildren<{}>) => {
   const [isAutoSelectEnabled, setAutoSelectEnabled] = useState(true);
   const latestPitchRef = useLatest(displayedPitch);
 
+  const desiredPitch = pitchList[activeStringIndex];
+
   const updatePitch = (pitch: number | null, buffer?: Float32Array) => {
     setCurrentBuffer(buffer);
     setCurrentPitch(pitch);
@@ -120,8 +123,7 @@ export const MediaContextProvider = (props: PropsWithChildren<{}>) => {
 
   // Displayed pitch and pitch indicator
   useLayoutEffect(() => {
-    const soughtPitch = pitchList[activeStringIndex];
-    const [minPitch, maxPitch] = [soughtPitch - TUNING_PITCH_RANGE / 2, soughtPitch + TUNING_PITCH_RANGE / 2];
+    const [minPitch, maxPitch] = [desiredPitch - TUNING_PITCH_RANGE / 2, desiredPitch + TUNING_PITCH_RANGE / 2];
 
     if (currentPitch == null || currentPitch < minPitch || currentPitch > maxPitch) {
       return;
@@ -133,8 +135,8 @@ export const MediaContextProvider = (props: PropsWithChildren<{}>) => {
         : currentPitch;
 
     setDisplayedPitch(interpolatedValue);
-    setPitchIndicator((currentPitch - soughtPitch) / TUNING_PITCH_RANGE);
-  }, [currentPitch, pitchList, activeStringIndex]);
+    setPitchIndicator((currentPitch - desiredPitch) / TUNING_PITCH_RANGE);
+  }, [currentPitch, desiredPitch]);
 
   // String auto select
   useLayoutEffect(() => {
@@ -156,6 +158,7 @@ export const MediaContextProvider = (props: PropsWithChildren<{}>) => {
   return (
     <MediaContext.Provider
       value={{
+        desiredPitch,
         audioStream,
         currentPitch,
         displayedPitch,
