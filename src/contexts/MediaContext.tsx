@@ -10,9 +10,6 @@ import React, {
 } from 'react';
 import { getPitch } from '../libs/audio';
 import { throttle } from '../utils/throttle';
-import { InstrumentsContext } from './InstrumentsContext';
-import { useLatest } from '../hooks/useLatest';
-import { AUTO_SELECT_PITCH_RANGE, TUNING_PITCH_RANGE } from '../constants/indicator';
 
 const PITCH_UPDATE_TIME = 20;
 
