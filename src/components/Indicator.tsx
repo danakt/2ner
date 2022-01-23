@@ -1,58 +1,74 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
-import { MediaContext } from '../contexts/MediaContext';
-import { getNoteNameFromPitch } from '../libs/notes';
+import classNames from 'classnames';
+import indicatorBg from '../icons/indicator.png';
+import { PitchContext } from '../contexts/PitchContext';
 
 const Wrapper = styled.div`
+  position: relative;
+  width: 300px;
   height: 200px;
   margin: 0 auto;
 `;
 
 const IndicatorBox = styled.div`
-  width: 400px;
-  height: 200px;
+  width: inherit;
+  height: inherit;
   position: absolute;
-  overflow: hidden;
+`;
 
-  &::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 200%;
-    background: #efefef;
-    border-radius: 50%;
-  }
+const Circle = styled.div`
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: url(${indicatorBg}) 50% 0 no-repeat;
+  background-size: 100% auto;
 
   &::after {
     content: '';
     position: absolute;
-    width: 0;
-    height: 0;
-    top: 0;
+    width: 8px;
+    height: 8px;
+    top: 15px;
     left: 50%;
     transform: translateX(-50%);
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-top: 14px solid #0005;
+    background: rgba(255, 255, 255, 0.33);
+    border-radius: 50%;
+  }
+
+  &.correct::after {
+    background: rgb(200, 255, 200);
+    box-shadow: 0 0 10px 5px rgba(0, 255, 13, 0.33);
   }
 `;
 
 const Arrow = styled.div`
   width: 0;
   height: 0;
-  /* background: #000; */
-  margin: 0 auto;
+  margin: 30px auto 0;
   transform-origin: 50% 100%;
   transition: transform 0.15s ease-out;
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-bottom: 200px solid #000;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-bottom: 100px solid #fff;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 94px;
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    transform: translateX(-50%);
+    border-radius: 50%;
+  }
 `;
 
 export const Indicator = () => {
-  const { pitchIndicator } = useContext(MediaContext);
+  const { pitchIndicator, isStringCorrect } = useContext(PitchContext);
 
   const deg = pitchIndicator * 90;
 
@@ -60,6 +76,8 @@ export const Indicator = () => {
     <>
       <Wrapper>
         <IndicatorBox>
+          <Circle className={classNames({ correct: isStringCorrect })} />
+
           <Arrow
             style={{
               transform: `rotate(${deg}deg)`,

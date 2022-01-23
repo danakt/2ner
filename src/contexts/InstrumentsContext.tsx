@@ -25,6 +25,7 @@ export const InstrumentsContextProvider = (props: PropsWithChildren<{}>) => {
 
   const setActiveInstrument = (instrumentName: InstrumentName) => {
     setActiveTuningIndex(0);
+    setActiveStringIndex(0);
     setActiveInstrumentName(instrumentName);
   };
 

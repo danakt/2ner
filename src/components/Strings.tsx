@@ -3,15 +3,15 @@ import styled from 'styled-components';
 import classNames from 'classnames';
 import { getNoteNameFromPitch } from '../libs/notes';
 import { InstrumentsContext } from '../contexts/InstrumentsContext';
-import { MediaContext } from '../contexts/MediaContext';
+import { PitchContext } from '../contexts/PitchContext';
 
 export const StringsWrapper = styled.div`
+  margin: 20px auto 0;
+  max-width: 735px;
+  height: 300px;
   display: flex;
   position: relative;
-  flex-direction: column;
   justify-content: space-evenly;
-  /* height: 400px; */
-  width: 50%;
 `;
 
 type TString = { size: number };
@@ -21,16 +21,18 @@ export const String = styled.div`
   position: relative;
   cursor: pointer;
   padding: 10px 0;
-  color: #999;
   transition: color 0.15s ease-out;
+  text-align: center;
 
   &::after {
     content: '';
     display: block;
-    /* position: absolute; */
-    width: 100%;
-    height: ${(props: TString) => props.size}px;
-    top: 50%;
+    margin-top: 20px;
+    position: absolute;
+    height: 100%;
+    width: ${(props: TString) => props.size}px;
+    left: 50%;
+    transform: translateX(-50%);
     background-color: #ebebeb;
     transition: background-color 0.15s ease-out;
   }
@@ -45,13 +47,19 @@ export const String = styled.div`
 `;
 
 export const StringInfo = styled.div`
-  font-size: 16px;
+  font-size: 30px;
 `;
+
+const getStringSize = (hz: number) => {
+  const maxPitch = 1000;
+
+  return Math.max(2, (maxPitch - hz) ** 4 / 1e11);
+};
 
 export const Strings = () => {
   const { instrumentsMap, activeInstrument, activeTuningIndex, activeStringIndex, setActiveStringIndex } =
     useContext(InstrumentsContext);
-  const { setAutoSelectEnabled } = useContext(MediaContext);
+  const { setAutoSelectEnabled } = useContext(PitchContext);
   const { pitchList } = instrumentsMap[activeInstrument].tunings[activeTuningIndex];
 
   return (
@@ -60,16 +68,14 @@ export const Strings = () => {
         {pitchList.map((item, i) => (
           <String
             key={i}
-            size={Math.max(3, (1000 - item) / 150)}
+            size={getStringSize(item)}
             className={classNames({ selected: i === activeStringIndex })}
             onClick={() => {
               setActiveStringIndex(i);
               setAutoSelectEnabled(false);
             }}
           >
-            <StringInfo>
-              {getNoteNameFromPitch(item)} {item.toFixed(2)} Hz
-            </StringInfo>
+            <StringInfo>{getNoteNameFromPitch(item)}</StringInfo>
           </String>
         ))}
       </StringsWrapper>

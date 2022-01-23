@@ -32,11 +32,16 @@ export function getCentsOffFromPitch(frequency: number, note: number) {
 }
 
 export function getNoteNameFromPitch(frequency: number): string {
-  if (frequency === 0) {
+  if (frequency <= 0) {
     return '—';
   }
 
   const noteNumber = getNoteNumberFromPitch(frequency);
 
-  return NOTE_STRINGS[noteNumber % 12] + (Math.floor(noteNumber / 12) - 1);
+  if (noteNumber < 0) {
+    return '—';
+  }
+  const note = NOTE_STRINGS[noteNumber % 12] + (Math.floor(noteNumber / 12) - 1);
+
+  return note;
 }

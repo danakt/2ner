@@ -1,3 +1,7 @@
+import iconGuitar from '../icons/guitar.png';
+import iconUkulele from '../icons/ukulele.png';
+import iconBass from '../icons/bass.png';
+
 // prettier-ignore
 import {
   A1, Bb2, Cd2, A2, A3, A4, B0, B3, C2, C3, C4, D2, D3, D4, E1, E2, E3, E4,
@@ -6,6 +10,7 @@ import {
 
 export const guitar: IInstrument = {
   name: 'Гитара',
+  icon: iconGuitar,
   tunings: [
     {
       name: 'Standard',
@@ -60,18 +65,9 @@ export const guitar: IInstrument = {
   ],
 };
 
-export const guitar12: IInstrument = {
-  name: 'Гитара (12 струн)',
-  tunings: [
-    {
-      name: 'Standard',
-      pitchList: [E3, E2, A3, A2, D4, D3, G4, G3, B3, B3, E4, E4],
-    },
-  ],
-};
-
 export const ukulele: IInstrument = {
   name: 'Укулеле',
+  icon: iconUkulele,
   tunings: [
     {
       name: 'Tenor',
@@ -85,7 +81,9 @@ export const ukulele: IInstrument = {
 };
 
 export const bassGuitar4: IInstrument = {
-  name: 'Бас-гитара (4 струны)',
+  name: 'Бас-гитара',
+  // name: 'Бас-гитара\n(4 струны)',
+  icon: iconBass,
   tunings: [
     {
       name: 'Standard',
@@ -114,24 +112,35 @@ export const bassGuitar4: IInstrument = {
   ],
 };
 
-export const bassGuitar5: IInstrument = {
-  name: 'Бас-гитара (5 струн)',
-  tunings: [
-    {
-      name: 'Standard',
-      pitchList: [B0, E1, A1, D2, G2],
-    },
-    {
-      name: 'Low Bb',
-      pitchList: [Bb0, Eb1, Gd1, Cd2, Fd2],
-    },
-    {
-      name: 'Low A',
-      pitchList: [A0, D1, G1, C2, F2],
-    },
-    {
-      name: 'High C',
-      pitchList: [E1, A1, D2, G2, C3],
-    },
-  ],
-};
+// export const bassGuitar5: IInstrument = {
+//   name: 'Бас-гитара\n(5 струн)',
+//   icon: iconBass,
+//   tunings: [
+//     {
+//       name: 'Standard',
+//       pitchList: [B0, E1, A1, D2, G2],
+//     },
+//     {
+//       name: 'Low Bb',
+//       pitchList: [Bb0, Eb1, Gd1, Cd2, Fd2],
+//     },
+//     {
+//       name: 'Low A',
+//       pitchList: [A0, D1, G1, C2, F2],
+//     },
+//     {
+//       name: 'High C',
+//       pitchList: [E1, A1, D2, G2, C3],
+//     },
+//   ],
+// };
+
+// export const guitar12: IInstrument = {
+//   name: 'Гитара (12 струн)',
+//   tunings: [
+//     {
+//       name: 'Standard',
+//       pitchList: [E3, E2, A3, A2, D4, D3, G4, G3, B3, B3, E4, E4],
+//     },
+//   ],
+// };

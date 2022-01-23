@@ -60,24 +60,22 @@ export const GlobalStyles = createGlobalStyle`
   * {
     box-sizing: border-box;
   }
+  html, body {
+    overflow-x: hidden;
+  }
   body {
     max-width: 1460px;
     padding: 0 30px;
     margin: 0 auto;
-    font-family: 'PT Serif', Times, serif;
-    font-size: 20px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 15px;
     line-height: 1.5;
     font-style: normal;
     color: rgba(0, 0, 0, .87);
     -webkit-font-smoothing: antialiased;
-    @media (max-width: 590px) {
-      font-size: 17px;
-      padding: 0 15px;
-    }
-    @media (prefers-color-scheme: dark) {
-      background: #121212;
-      color: #fff;
-    }
+    background: #121212;
+    color: #fff;
+    
   }
   a {
     text-decoration: none;
@@ -85,24 +83,15 @@ export const GlobalStyles = createGlobalStyle`
     background-size: 100% 1px;
     &:visited {
       color: rgb(146, 54, 149);
-      background-image: linear-gradient(rgba(146, 54, 149, .13), rgba(146, 54, 149, .13));
-      @media (prefers-color-scheme: dark) {
-        background-image: linear-gradient(rgba(146, 54, 149, .3), rgba(146, 54, 149, .3));
-      }
+      background-image: linear-gradient(rgba(146, 54, 149, .3), rgba(146, 54, 149, .3));
     }
     &, &.always-fresh {
-      color: #428bca;
-      background-image: linear-gradient(rgba(66, 139, 202, .13), rgba(66, 139, 202, .13));
-      @media (prefers-color-scheme: dark) {
-        color: #5aa6e7;
-        background-image: linear-gradient(rgba(90, 166, 231, .3), rgba(90, 166, 231, .3));
-      }
+      color: #5aa6e7;
+      background-image: linear-gradient(rgba(90, 166, 231, .3), rgba(90, 166, 231, .3));
+
       &:active, &:hover, &:focus {
         color: rgb(255, 0, 0);
-        background-image: linear-gradient(rgba(255, 0, 0, .13), rgba(255, 0, 0, .13));
-        @media (prefers-color-scheme: dark) {
-          background-image: linear-gradient(rgba(255, 0, 0, .3), rgba(255, 0, 0, .3));
-        }
+        background-image: linear-gradient(rgba(255, 0, 0, .3), rgba(255, 0, 0, .3));
       }
     }
 

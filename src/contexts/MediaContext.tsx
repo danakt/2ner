@@ -1,25 +1,27 @@
-import React, { createContext, PropsWithChildren, useContext, useEffect, useLayoutEffect, useState } from 'react';
+import React, {
+  createContext,
+  MutableRefObject,
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import { getPitch } from '../libs/audio';
 import { throttle } from '../utils/throttle';
 import { InstrumentsContext } from './InstrumentsContext';
 import { useLatest } from '../hooks/useLatest';
 import { AUTO_SELECT_PITCH_RANGE, TUNING_PITCH_RANGE } from '../constants/indicator';
 
-const PITCH_UPDATE_TIME = 50;
+const PITCH_UPDATE_TIME = 20;
 
 export type MediaContextData = {
   audioStream?: MediaStream | null;
-  currentPitch: number | null;
+  currentPitchRef: MutableRefObject<number | null>;
   /** Current audio pitch to display */
-  displayedPitch: number;
-  /** Indication of tuning from -1 to 1; 0 — is a tuned sound.
-   * The range is determined by the `PITCH_RANGE` variable */
-  pitchIndicator: number;
-  desiredPitch: number;
-  currentBuffer?: Float32Array;
-  isAutoSelectEnabled: boolean;
+  currentBufferRef: MutableRefObject<Float32Array | undefined>;
   requestAudio(): Promise<void>;
-  setAutoSelectEnabled: (isEnabled: boolean) => void;
 };
 
 export const MediaContext = createContext<MediaContextData>({} as any);
@@ -68,25 +70,15 @@ export function startAudioProcessing(
 }
 
 export const MediaContextProvider = (props: PropsWithChildren<{}>) => {
-  const { instrumentsMap, activeInstrument, activeTuningIndex, activeStringIndex, setActiveStringIndex } =
-    useContext(InstrumentsContext);
-  const { pitchList } = instrumentsMap[activeInstrument].tunings[activeTuningIndex];
-
   const bufferSize = 2048;
 
   const [audioStream, setAudioStream] = useState<MediaStream | null>();
-  const [currentBuffer, setCurrentBuffer] = useState<Float32Array>();
-  const [currentPitch, setCurrentPitch] = useState<number | null>(null);
-  const [displayedPitch, setDisplayedPitch] = useState(0);
-  const [pitchIndicator, setPitchIndicator] = useState(0);
-  const [isAutoSelectEnabled, setAutoSelectEnabled] = useState(true);
-  const latestPitchRef = useLatest(displayedPitch);
-
-  const desiredPitch = pitchList[activeStringIndex];
+  const currentBufferRef = useRef<Float32Array>();
+  const currentPitchRef = useRef<number | null>(null);
 
   const updatePitch = (pitch: number | null, buffer?: Float32Array) => {
-    setCurrentBuffer(buffer);
-    setCurrentPitch(pitch);
+    currentBufferRef.current = buffer;
+    currentPitchRef.current = pitch;
   };
 
   const requestAudio = async () => {
@@ -121,52 +113,13 @@ export const MediaContextProvider = (props: PropsWithChildren<{}>) => {
     }
   }, [audioStream]);
 
-  // Displayed pitch and pitch indicator
-  useLayoutEffect(() => {
-    const [minPitch, maxPitch] = [desiredPitch - TUNING_PITCH_RANGE / 2, desiredPitch + TUNING_PITCH_RANGE / 2];
-
-    if (currentPitch == null || currentPitch < minPitch || currentPitch > maxPitch) {
-      return;
-    }
-
-    const interpolatedValue =
-      latestPitchRef.current != null && !isNaN(latestPitchRef.current)
-        ? latestPitchRef.current + (currentPitch - latestPitchRef.current) / 3
-        : currentPitch;
-
-    setDisplayedPitch(interpolatedValue);
-    setPitchIndicator((currentPitch - desiredPitch) / TUNING_PITCH_RANGE);
-  }, [currentPitch, desiredPitch]);
-
-  // String auto select
-  useLayoutEffect(() => {
-    if (!isAutoSelectEnabled || currentPitch == null) {
-      return;
-    }
-
-    for (let i = 0; i < pitchList.length; i++) {
-      const pitch = pitchList[i];
-      const [minPitch, maxPitch] = [pitch - AUTO_SELECT_PITCH_RANGE / 2, pitch + AUTO_SELECT_PITCH_RANGE / 2];
-
-      if (currentPitch > minPitch && currentPitch < maxPitch) {
-        setActiveStringIndex(i);
-        return;
-      }
-    }
-  }, [currentPitch, pitchList]);
-
   return (
     <MediaContext.Provider
       value={{
-        desiredPitch,
         audioStream,
-        currentPitch,
-        displayedPitch,
-        pitchIndicator,
-        currentBuffer,
-        isAutoSelectEnabled,
+        currentPitchRef,
+        currentBufferRef,
         requestAudio,
-        setAutoSelectEnabled,
       }}
     >
       {props.children}

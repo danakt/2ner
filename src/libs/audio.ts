@@ -1,6 +1,11 @@
-const LOWER_PITCH_CUTOFF = 30.0;
-const SMALL_CUTOFF = 0.5;
+/**
+ * Implementation of The McLeod Pitch Method
+ * https://github.com/JorenSix/TarsosDSP/blob/master/src/core/be/tarsos/dsp/pitch/McLeodPitchMethod.java
+ */
+
 const CUTOFF = 0.93;
+const SMALL_CUTOFF = 0.5;
+const LOWER_PITCH_CUTOFF = 30.0; // Hz
 
 export function getPitch(buffer: Float32Array, sampleRate: number) {
   const nsdf = normalizedSquareDifference(buffer);
@@ -23,7 +28,7 @@ export function getPitch(buffer: Float32Array, sampleRate: number) {
   }
 
   const actualCutoff = CUTOFF * highestAmplitude;
-  let period = 0.0;
+  let period = 0;
 
   for (const est of estimates) {
     if (est[1] >= actualCutoff) {
@@ -43,10 +48,10 @@ function peakPicking(nsdf: number[]) {
   let curMaxPos = 0;
   const len = nsdf.length;
 
-  while (pos < (len - 1) / 3 && nsdf[pos] > 0.0) {
+  while (pos < (len - 1) / 3 && nsdf[pos] > 0) {
     pos++;
   }
-  while (pos < len - 1 && nsdf[0] <= 0.0) {
+  while (pos < len - 1 && nsdf[0] <= 0) {
     pos++;
   }
 
@@ -65,12 +70,12 @@ function peakPicking(nsdf: number[]) {
 
     pos++;
 
-    if (pos < len - 1 && nsdf[pos] <= 0.0) {
+    if (pos < len - 1 && nsdf[pos] <= 0) {
       if (curMaxPos > 0) {
         maxPositions.push(curMaxPos);
         curMaxPos = 0;
       }
-      while (pos < len - 1 && nsdf[0] <= 0.0) {
+      while (pos < len - 1 && nsdf[0] <= 0) {
         pos++;
       }
     }
@@ -85,19 +90,15 @@ function peakPicking(nsdf: number[]) {
 
 function normalizedSquareDifference(buffer: Float32Array) {
   const len = buffer.length;
-  const nsdf: number[] = new Array(len).fill(0.0);
+  const nsdf: number[] = new Array(len).fill(0);
 
   for (let tau = 0; tau < len; tau++) {
-    let acf = 0.0;
-    let divisorM = 0.0;
+    let acf = 0;
+    let divisorM = 0;
 
     for (let i = 0; i < len - tau; i++) {
       acf += buffer[i] * buffer[i + tau];
-      let el1 = buffer[i];
-      let p1 = Math.pow(el1, 2);
-      let el2 = buffer[i + tau];
-      let p2 = Math.pow(el2, 2);
-      divisorM += p1 + p2;
+      divisorM += buffer[i] * buffer[i] + buffer[i + tau] * buffer[i + tau];
     }
 
     nsdf[tau] = (2.0 * acf) / divisorM;
@@ -112,7 +113,7 @@ function parabolicInterpolation(nsdf: number[], tau: number) {
   const nsdfc = nsdf[tau + 1];
   const bottom = nsdfc + nsdfa - 2.0 * nsdfb;
 
-  if (bottom === 0.0) {
+  if (bottom === 0) {
     return [tau, nsdfb];
   } else {
     let delta = nsdfa - nsdfc;

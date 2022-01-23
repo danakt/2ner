@@ -4,15 +4,20 @@ import { Strings } from './Strings';
 import { MediaContext } from '../contexts/MediaContext';
 import { GlobalStyles } from './GlobalStyles';
 import { Indicator } from './Indicator';
-import { getNoteNameFromPitch } from '../libs/notes';
 import { InstrumentSelect } from './InstrumentSelect';
 import { TuningSelect } from './TuningSelect';
-
-const Body = styled.div`
-  padding: 30px 0 100px;
-`;
+import { Note } from './Note';
+import { AutoSelectToggle } from './AutoselectToggle';
 
 const Wrapper = styled.div`
+  /* overflow: hidden; */
+`;
+
+const Body = styled.div`
+  padding-top: 30px;
+`;
+
+const ContentWrapper = styled.div`
   display: flex;
 `;
 
@@ -56,11 +61,10 @@ const Button = styled.button`
 `;
 
 export const App = () => {
-  const { requestAudio, audioStream, displayedPitch, setAutoSelectEnabled, isAutoSelectEnabled, desiredPitch } =
-    useContext(MediaContext);
+  const { requestAudio, audioStream } = useContext(MediaContext);
 
   return (
-    <>
+    <Wrapper>
       <GlobalStyles />
 
       <Body>
@@ -71,43 +75,28 @@ export const App = () => {
           / 2ner
         </Breadcrumbs>
 
-        <Wrapper>
+        <ContentWrapper>
           <Content>
             {!!audioStream ? (
               <>
                 <InstrumentSelect />
                 <TuningSelect />
-
-                <h1>
-                  {displayedPitch.toFixed(2)} Hz / {desiredPitch} Hz
-                </h1>
-                <h1>Note: {getNoteNameFromPitch(displayedPitch)}</h1>
-                <label>
-                  <input
-                    checked={isAutoSelectEnabled}
-                    type="checkbox"
-                    onChange={(event) => {
-                      setAutoSelectEnabled(event.target.checked);
-                    }}
-                  />{' '}
-                  Автовыбор
-                </label>
+                <Note />
                 <Indicator />
+                <AutoSelectToggle />
                 <Strings />
               </>
             ) : (
-              <Center>
-                <br />
-                <br />
-                Для использования тюнера требуется включить микрофон
-                <br />
-                <br />
-                <Button onClick={requestAudio}>Включить</Button>
-              </Center>
+              <div>
+                <span>Для использования тюнера требуется</span>{' '}
+                <a href="#" onClick={requestAudio}>
+                  включить микрофон
+                </a>
+              </div>
             )}
           </Content>
-        </Wrapper>
+        </ContentWrapper>
       </Body>
-    </>
+    </Wrapper>
   );
 };
