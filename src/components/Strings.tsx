@@ -5,49 +5,59 @@ import { getNoteNameFromPitch } from '../libs/notes';
 import { InstrumentsContext } from '../contexts/InstrumentsContext';
 import { PitchContext } from '../contexts/PitchContext';
 
-export const StringsWrapper = styled.div`
+const StringsWrapper = styled.div`
+  flex: 1 1 auto;
+  overflow: hidden;
   margin: 20px auto 0;
-  max-width: 735px;
-  height: 300px;
+  width: 100%;
+  min-height: 150px;
   display: flex;
   position: relative;
   justify-content: space-evenly;
+
+  @media (min-width: 590px) {
+    max-width: 700px;
+  }
+`;
+
+const StringWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+`;
+
+const StringInfo = styled.div`
+  font-size: 30px;
+  flex: 0 0 60px;
+
+  .selected & {
+    color: #428bca;
+  }
 `;
 
 type TString = { size: number };
-
-export const String = styled.div`
+const String = styled.div`
   width: 100%;
-  position: relative;
-  cursor: pointer;
-  padding: 10px 0;
+  height: 100%;
   transition: color 0.15s ease-out;
   text-align: center;
+  position: relative;
 
   &::after {
+    position: absolute;
     content: '';
     display: block;
-    margin-top: 20px;
-    position: absolute;
     height: 100%;
-    width: ${(props: TString) => props.size}px;
     left: 50%;
     transform: translateX(-50%);
+    width: ${(props: TString) => props.size}px;
     background-color: #ebebeb;
     transition: background-color 0.15s ease-out;
   }
 
-  &.selected {
-    color: #428bca;
-
-    &::after {
-      background-color: #428bca;
-    }
+  .selected &::after {
+    background-color: #428bca;
   }
-`;
-
-export const StringInfo = styled.div`
-  font-size: 30px;
 `;
 
 const getStringSize = (hz: number) => {
@@ -66,17 +76,18 @@ export const Strings = () => {
     <React.Fragment>
       <StringsWrapper>
         {pitchList.map((item, i) => (
-          <String
+          <StringWrapper
             key={i}
-            size={getStringSize(item)}
-            className={classNames({ selected: i === activeStringIndex })}
             onClick={() => {
               setActiveStringIndex(i);
               setAutoSelectEnabled(false);
             }}
+            className={classNames({ selected: i === activeStringIndex })}
           >
             <StringInfo>{getNoteNameFromPitch(item)}</StringInfo>
-          </String>
+
+            <String size={getStringSize(item)} />
+          </StringWrapper>
         ))}
       </StringsWrapper>
     </React.Fragment>

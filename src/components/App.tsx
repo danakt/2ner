@@ -11,14 +11,22 @@ import { AutoSelectToggle } from './AutoselectToggle';
 
 const Wrapper = styled.div`
   /* overflow: hidden; */
+  height: 100%;
+  min-height: 800px;
+
+  @media (min-width: 590px) {
+    min-height: 900px;
+  }
 `;
 
 const Body = styled.div`
   padding-top: 30px;
+  height: 100%;
 `;
 
 const ContentWrapper = styled.div`
   display: flex;
+  height: 100%;
 `;
 
 const Content = styled.div`
@@ -27,6 +35,9 @@ const Content = styled.div`
   flex: 0 0 auto;
   position: relative;
   margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
 
   @media (max-width: 1310px) {
     width: 62.5%;
@@ -68,15 +79,15 @@ export const App = () => {
       <GlobalStyles />
 
       <Body>
-        <Breadcrumbs>
-          <a href="https://danakt.com" className="always-fresh">
-            Данакт
-          </a>{' '}
-          / 2ner
-        </Breadcrumbs>
-
         <ContentWrapper>
           <Content>
+            <Breadcrumbs>
+              <a href="https://danakt.com" className="always-fresh">
+                Данакт
+              </a>{' '}
+              / 2ner
+            </Breadcrumbs>
+
             {!!audioStream ? (
               <>
                 <InstrumentSelect />
@@ -89,7 +100,14 @@ export const App = () => {
             ) : (
               <div>
                 <span>Для использования тюнера требуется</span>{' '}
-                <a href="#" onClick={requestAudio}>
+                <a
+                  href="#"
+                  className="always-fresh"
+                  onClick={(event) => {
+                    requestAudio();
+                    event.preventDefault();
+                  }}
+                >
                   включить микрофон
                 </a>
               </div>
