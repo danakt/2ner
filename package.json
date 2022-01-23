@@ -4,7 +4,9 @@
   "description": "",
   "scripts": {
     "start": "parcel src/index.html --host 0.0.0.0 --https",
-    "build": "rimraf ./docs && parcel build src/index.html --dist-dir docs --public-url ./"
+    "build:clear": "rimraf ./docs",
+    "build:static": "copyfiles -f ./static/* ./docs",
+    "build": "npm run build:clear && npm run build:static && parcel build src/index.html --dist-dir docs --public-url ./"
   },
   "author": "Danakt Frost",
   "license": "MIT",
@@ -14,6 +16,7 @@
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",
     "@types/styled-components": "^5.1.18",
+    "copyfiles": "^2.4.1",
     "parcel": "^2.2.1",
     "prettier": "^2.5.1",
     "rimraf": "^3.0.2",
