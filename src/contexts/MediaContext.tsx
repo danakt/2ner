@@ -94,6 +94,14 @@ export const MediaContextProvider = (props: PropsWithChildren<{}>) => {
     }
   };
 
+  // // Auto request audio on desktop
+  // useEffect(() => {
+  //   console.log((navigator as any).userAgentData.mobile);
+  //   if (!(navigator as any).userAgentData.mobile) {
+  //     requestAudio();
+  //   }
+  // }, []);
+
   useEffect(() => {
     if (audioStream != null) {
       const throttledPitchUpdate = throttle(PITCH_UPDATE_TIME, (pitch: number | null, buffer?: Float32Array) => {

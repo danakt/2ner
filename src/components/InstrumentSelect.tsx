@@ -6,10 +6,9 @@ import { InstrumentsContext } from '../contexts/InstrumentsContext';
 const Wrapper = styled.div`
   display: flex;
   position: relative;
-  margin: 0 -30px;
   overflow: auto;
-  padding-bottom: 20px;
-  justify-content: center;
+  padding-bottom: 10px;
+  /* justify-content: center; */
 
   &::-webkit-scrollbar {
     -webkit-appearance: none;
@@ -19,6 +18,7 @@ const Wrapper = styled.div`
 
   @media (min-width: 590px) {
     justify-content: center;
+    padding-bottom: 20px;
   }
 `;
 
@@ -27,11 +27,19 @@ const InstrumentName = styled.span``;
 const InstrumentButton = styled.div`
   background-image: none;
   text-align: center;
-  padding: 0 5px;
-  min-width: 90px;
+  font-size: 20px;
+
+  & + & {
+    margin-left: 15px;
+  }
 
   @media (min-width: 590px) {
+    min-width: 90px;
     padding: 0 15px;
+
+    & + & {
+      margin: 0;
+    }
   }
 
   &:not(.active) {

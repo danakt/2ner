@@ -5,7 +5,7 @@ import { getNoteNameFromPitch } from '../libs/notes';
 
 const Wrapper = styled.div`
   position: relative;
-  padding: 10px 0;
+  padding: 20px 0 30px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -44,12 +44,12 @@ const PitchWrapper = styled.div`
 `;
 
 const DisplayedPitch = styled.div`
-  width: 100px;
+  width: 80px;
   text-align: center;
 `;
 
 const DesiredPitch = styled.div`
-  width: 70px;
+  width: 80px;
   text-align: center;
   opacity: 0.5;
 `;
@@ -62,8 +62,8 @@ export const Note = () => {
       <NoteWrapper className="sans-serif">{getNoteNameFromPitch(displayedPitch)}</NoteWrapper>
 
       <PitchWrapper>
-        <DisplayedPitch>{displayedPitch.toFixed(2)} Hz</DisplayedPitch>
-        <DesiredPitch>{desiredPitch} Hz</DesiredPitch>
+        <DisplayedPitch>{displayedPitch.toFixed(1)} Hz</DisplayedPitch>
+        <DesiredPitch>{desiredPitch.toFixed(1)} Hz</DesiredPitch>
       </PitchWrapper>
     </Wrapper>
   );

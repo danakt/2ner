@@ -8,6 +8,7 @@ import { InstrumentSelect } from './InstrumentSelect';
 import { TuningSelect } from './TuningSelect';
 import { Note } from './Note';
 import { AutoSelectToggle } from './AutoselectToggle';
+import { AudioRequestMessage } from './AudioRequestMessage';
 
 const Wrapper = styled.div`
   /* overflow: hidden; */
@@ -98,19 +99,7 @@ export const App = () => {
                 <Strings />
               </>
             ) : (
-              <div>
-                <span>Для использования тюнера требуется</span>{' '}
-                <a
-                  href="#"
-                  className="always-fresh"
-                  onClick={(event) => {
-                    requestAudio();
-                    event.preventDefault();
-                  }}
-                >
-                  включить микрофон
-                </a>
-              </div>
+              <AudioRequestMessage />
             )}
           </Content>
         </ContentWrapper>

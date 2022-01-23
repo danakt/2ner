@@ -52,16 +52,16 @@ export const guitar: IInstrument = {
       pitchList: [C2, G2, C3, G3, C4, E4],
       group: 'Popular',
     },
-    {
-      name: 'Drop A',
-      pitchList: [A1, E2, A2, D3, Fd3, B3],
-      group: 'Drop',
-    },
-    {
-      name: 'Drop A#',
-      pitchList: [Bb1, F2, Bb2, Eb3, G3, C4],
-      group: 'Drop',
-    },
+    // {
+    //   name: 'Drop A',
+    //   pitchList: [A1, E2, A2, D3, Fd3, B3],
+    //   group: 'Drop',
+    // },
+    // {
+    //   name: 'Drop A#',
+    //   pitchList: [Bb1, F2, Bb2, Eb3, G3, C4],
+    //   group: 'Drop',
+    // },
   ],
 };
 
