@@ -84,7 +84,7 @@ export const InstrumentSelect = () => {
             setActiveInstrument(item);
           }}
         >
-          <InstrumentIcon style={{ backgroundImage: `url(${instrumentsMap[item].icon}})` }}></InstrumentIcon>
+          {/* <InstrumentIcon style={{ backgroundImage: `url(${instrumentsMap[item].icon}})` }}></InstrumentIcon> */}
 
           <InstrumentName>
             {instrumentsMap[item].name.split(/(\n)/).map((item) => (item === '\n' ? <br /> : item))}
