@@ -10,7 +10,7 @@ const StringsWrapper = styled.div`
   overflow: hidden;
   margin: 20px auto 0;
   width: 100%;
-  min-height: 150px;
+  min-height: 100px;
   display: flex;
   position: relative;
   justify-content: space-evenly;

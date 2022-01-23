@@ -11,9 +11,11 @@ import { AutoSelectToggle } from './AutoselectToggle';
 import { AudioRequestMessage } from './AudioRequestMessage';
 
 const Wrapper = styled.div`
-  /* overflow: hidden; */
   height: 100%;
-  min-height: 800px;
+  min-height: 700px;
+  max-width: 1460px;
+  margin: 0 auto;
+  padding: 0 30px;
 
   @media (min-width: 590px) {
     min-height: 900px;
@@ -73,7 +75,7 @@ const Button = styled.button`
 `;
 
 export const App = () => {
-  const { requestAudio, audioStream } = useContext(MediaContext);
+  const { audioStream, isLoading } = useContext(MediaContext);
 
   return (
     <Wrapper>
@@ -89,17 +91,23 @@ export const App = () => {
               / 2ner
             </Breadcrumbs>
 
-            {!!audioStream ? (
-              <>
-                <InstrumentSelect />
-                <TuningSelect />
-                <Note />
-                <Indicator />
-                <AutoSelectToggle />
-                <Strings />
-              </>
+            {isLoading ? (
+              <></>
             ) : (
-              <AudioRequestMessage />
+              <>
+                {!!audioStream ? (
+                  <>
+                    <InstrumentSelect />
+                    <TuningSelect />
+                    <Note />
+                    <Indicator />
+                    <AutoSelectToggle />
+                    <Strings />
+                  </>
+                ) : (
+                  <AudioRequestMessage />
+                )}
+              </>
             )}
           </Content>
         </ContentWrapper>

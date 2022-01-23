@@ -6,6 +6,5 @@ declare interface ITuning {
 
 declare interface IInstrument {
   name: string;
-  icon?: string;
   tunings: ITuning[];
 }

@@ -21,6 +21,7 @@ export type MediaContextData = {
   currentPitchRef: MutableRefObject<number | null>;
   /** Current audio pitch to display */
   currentBufferRef: MutableRefObject<Float32Array | undefined>;
+  isLoading: boolean;
   requestAudio(): Promise<void>;
 };
 
@@ -72,6 +73,7 @@ export function startAudioProcessing(
 export const MediaContextProvider = (props: PropsWithChildren<{}>) => {
   const bufferSize = 2048;
 
+  const [isLoading, setLoading] = useState(false);
   const [audioStream, setAudioStream] = useState<MediaStream | null>();
   const currentBufferRef = useRef<Float32Array>();
   const currentPitchRef = useRef<number | null>(null);
@@ -83,6 +85,8 @@ export const MediaContextProvider = (props: PropsWithChildren<{}>) => {
 
   const requestAudio = async () => {
     // Getting media stream
+    setLoading(true);
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
@@ -92,15 +96,16 @@ export const MediaContextProvider = (props: PropsWithChildren<{}>) => {
 
       setAudioStream(null);
     }
+
+    setLoading(false);
   };
 
-  // // Auto request audio on desktop
-  // useEffect(() => {
-  //   console.log((navigator as any).userAgentData.mobile);
-  //   if (!(navigator as any).userAgentData.mobile) {
-  //     requestAudio();
-  //   }
-  // }, []);
+  // Auto request audio on desktop
+  useLayoutEffect(() => {
+    if (!navigator.userAgent.match(/iPhone|iPad|iPod|Android/i)) {
+      requestAudio();
+    }
+  }, []);
 
   useEffect(() => {
     if (audioStream != null) {
@@ -127,6 +132,7 @@ export const MediaContextProvider = (props: PropsWithChildren<{}>) => {
         audioStream,
         currentPitchRef,
         currentBufferRef,
+        isLoading,
         requestAudio,
       }}
     >

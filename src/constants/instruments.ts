@@ -1,7 +1,3 @@
-import iconGuitar from '../icons/guitar.png';
-import iconUkulele from '../icons/ukulele.png';
-import iconBass from '../icons/bass.png';
-
 // prettier-ignore
 import {
   A1, Bb2, Cd2, A2, A3, A4, B0, B3, C2, C3, C4, D2, D3, D4, E1, E2, E3, E4,
@@ -10,7 +6,6 @@ import {
 
 export const guitar: IInstrument = {
   name: 'Гитара',
-  icon: iconGuitar,
   tunings: [
     {
       name: 'Standard',
@@ -67,7 +62,6 @@ export const guitar: IInstrument = {
 
 export const ukulele: IInstrument = {
   name: 'Укулеле',
-  icon: iconUkulele,
   tunings: [
     {
       name: 'Tenor',
@@ -83,7 +77,6 @@ export const ukulele: IInstrument = {
 export const bassGuitar4: IInstrument = {
   name: 'Бас-гитара',
   // name: 'Бас-гитара\n(4 струны)',
-  icon: iconBass,
   tunings: [
     {
       name: 'Standard',

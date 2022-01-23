@@ -64,9 +64,6 @@ export const GlobalStyles = createGlobalStyle`
     overflow-x: hidden;
   }
   body {
-    max-width: 1460px;
-    padding: 0 30px;
-    margin: 0 auto;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 15px;
     line-height: 1.5;
