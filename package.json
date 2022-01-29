@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "parcel src/index.html --host 0.0.0.0 --https",
+    "start": "npm run build:static && parcel src/index.html --host 0.0.0.0 --https --dist-dir ./docs",
     "build:clear": "rimraf ./docs",
     "build:static": "copyfiles -f ./static/* ./docs",
-    "build": "npm run build:clear && npm run build:static && parcel build src/index.html --dist-dir docs --public-url ./"
+    "build": "npm run build:clear && npm run build:static && parcel build src/index.html --dist-dir ./docs --public-url ./"
   },
   "author": "Danakt Frost",
   "license": "MIT",

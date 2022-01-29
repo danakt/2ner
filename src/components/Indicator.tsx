@@ -1,14 +1,18 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
 import classNames from 'classnames';
-import indicatorBg from '../icons/indicator.png';
 import { PitchContext } from '../contexts/PitchContext';
 
 const Wrapper = styled.div`
   position: relative;
-  width: 300px;
-  height: 200px;
+  width: 200px;
+  height: 150px;
   margin: 0 auto;
+
+  @media (min-width: 590px) {
+    width: 300px;
+    height: 200px;
+  }
 `;
 
 const IndicatorBox = styled.div`
@@ -23,7 +27,7 @@ const Circle = styled.div`
   top: 0;
   width: 100%;
   height: 100%;
-  background: url(${indicatorBg}) 50% 0 no-repeat;
+  background: url('/indicator.png') 50% 0 no-repeat;
   background-size: 100% auto;
 
   &::after {
@@ -52,18 +56,26 @@ const Arrow = styled.div`
   transition: transform 0.15s ease-out;
   border-left: 3px solid transparent;
   border-right: 3px solid transparent;
-  border-bottom: 100px solid #fff;
+  border-bottom: 70px solid #fff;
 
   &::before {
     content: '';
     position: absolute;
     left: 50%;
-    top: 94px;
+    top: 64px;
     width: 12px;
     height: 12px;
     background: #fff;
     transform: translateX(-50%);
     border-radius: 50%;
+  }
+
+  @media (min-width: 590px) {
+    border-bottom: 100px solid #fff;
+
+    &::before {
+      top: 94px;
+    }
   }
 `;
 

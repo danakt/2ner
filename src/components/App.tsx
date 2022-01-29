@@ -12,10 +12,11 @@ import { AudioRequestMessage } from './AudioRequestMessage';
 
 const Wrapper = styled.div`
   height: 100%;
-  min-height: 700px;
+  min-height: 600px;
   max-width: 1460px;
   margin: 0 auto;
   padding: 0 30px;
+  overflow: hidden;
 
   @media (min-width: 590px) {
     min-height: 900px;
@@ -91,23 +92,17 @@ export const App = () => {
               / 2ner
             </Breadcrumbs>
 
-            {isLoading ? (
-              <></>
-            ) : (
+            {!isLoading && !!audioStream ? (
               <>
-                {!!audioStream ? (
-                  <>
-                    <InstrumentSelect />
-                    <TuningSelect />
-                    <Note />
-                    <Indicator />
-                    <AutoSelectToggle />
-                    <Strings />
-                  </>
-                ) : (
-                  <AudioRequestMessage />
-                )}
+                <InstrumentSelect />
+                <TuningSelect />
+                <Note />
+                <Indicator />
+                <AutoSelectToggle />
+                <Strings />
               </>
+            ) : (
+              <AudioRequestMessage />
             )}
           </Content>
         </ContentWrapper>

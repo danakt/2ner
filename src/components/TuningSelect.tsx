@@ -2,7 +2,6 @@ import React, { useContext, useRef } from 'react';
 import styled from 'styled-components';
 import { InstrumentsContext } from '../contexts/InstrumentsContext';
 import { getNoteNameFromPitch } from '../libs/notes';
-import arrowIcon from '../icons/angle-arrow-down.png';
 
 const Wrapper = styled.div`
   display: flex;
@@ -21,7 +20,7 @@ const SelectWrapper = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   padding-right: 20px;
-  background: url(${arrowIcon}) 100% 60% no-repeat;
+  background: url('/angle-arrow-down.png') 100% 60% no-repeat;
   background-size: 12px;
 
   @media (min-width: 590px) {
